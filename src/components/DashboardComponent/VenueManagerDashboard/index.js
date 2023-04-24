@@ -1,14 +1,14 @@
 import React from 'react';
-import { Container, Section, Title } from './VenueManagerDashboard.styles';
 
 const VenueManagerDashboard = () => {
   return (
-    <Section>
-      <Container>
-        <Title>Venue Manager Dashboard</Title>
-        {/* Add your venue manager dashboard specific content here */}
-      </Container>
-    </Section>
+    <div className='section'>
+      <div className='container '>
+        <div className='wrapper-center'>
+          <h1 className='title'>Venue Manager Dashboard Dashboard</h1>
+        </div>
+      </div>
+    </div>
   );
 };
 
