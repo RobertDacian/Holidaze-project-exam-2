@@ -1,0 +1,9 @@
+export { default as Contact } from './Contact';
+export { default as Venues } from './Venues';
+export { default as VenueDetails } from './VenueDetails';
+export { default as UserDashboardPage } from './UserDashboardPage';
+export { default as Home } from './Home';
+export { default as VenueManagerDashboardPage } from './VenueManagerDashboardPage';
+export { default as SuccessfulBooking } from './SuccessfulBooking';
+export { default as Login } from './LogIn';
+export { default as SignUp } from './SignUp';
