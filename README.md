@@ -1,6 +1,6 @@
 # Holidaze-project-exam-2
 
-holidaze/
+<!-- holidaze/
 ├── node_modules
 ├── public/
 │ ├── index.html
@@ -104,4 +104,4 @@ styles/
 │ ├── theme.styles.js
 │ ├── typography.styles.js
 │ ├── utilities.styles.js
-│ ├── index.js
+│ ├── index.js -->
