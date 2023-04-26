@@ -1,6 +1,6 @@
 export { default as Contact } from './Contact';
-export { default as Venues } from './Venues';
-export { default as VenueDetails } from './VenueDetails';
+export { default as VenuesPage } from './VenuesPage';
+export { default as VenueDetailsPage } from './VenueDetailsPage';
 export { default as UserDashboardPage } from './UserDashboardPage';
 export { default as Home } from './Home';
 export { default as VenueManagerDashboardPage } from './VenueManagerDashboardPage';

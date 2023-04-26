@@ -1,14 +1,14 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Layout from './components/Layout';
-import { AuthProvider } from './contexts/AuthContext';
+import { GlobalProvider } from './contexts/GlobalContext';
 import {
   Home,
   Contact,
-  Venues,
+  VenuesPage,
   UserDashboardPage,
   VenueManagerDashboardPage,
-  VenueDetails,
+  VenueDetailsPage,
   Login,
   SignUp,
   SuccessfulBooking,
@@ -17,13 +17,13 @@ import {
 function App() {
   return (
     <Router>
-      <AuthProvider>
+      <GlobalProvider>
         <Layout>
           <Routes>
             <Route path='/' element={<Home />} />
             <Route path='/contact' element={<Contact />} />
-            <Route path='/venues' element={<Venues />} />
-            <Route path='/venues/:id' element={<VenueDetails />} />
+            <Route path='/venues' element={<VenuesPage />} />
+            <Route path='/venues/:id' element={<VenueDetailsPage />} />
             <Route path='/user-dashboard' element={<UserDashboardPage />} />
             <Route
               path='/venue-manager-dashboard'
@@ -35,7 +35,7 @@ function App() {
             {/* Add other routes as needed */}
           </Routes>
         </Layout>
-      </AuthProvider>
+      </GlobalProvider>
     </Router>
   );
 }
