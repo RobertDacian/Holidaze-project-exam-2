@@ -2,8 +2,10 @@
 // import { useNavigate } from 'react-router-dom';
 // import { login } from '../../../api/auth';
 // import { FormWrapper } from '../../../components/Auth/Signup/SignUp.styles';
+// import { useAuth } from '../../../contexts/GlobalContext';
 
 // const LogIn = () => {
+//   const { setCurrentUser } = useAuth();
 //   const [activeTab, setActiveTab] = useState('user');
 //   const [formData, setFormData] = useState({
 //     email: '',
@@ -29,7 +31,8 @@
 //       const user = await login(
 //         formData.email,
 //         formData.password,
-//         isVenueManager
+//         isVenueManager,
+//         setCurrentUser
 //       );
 
 //       if (user.venueManager !== isVenueManager) {
@@ -40,8 +43,8 @@
 //         );
 //         return;
 //       }
-
-//       localStorage.setItem(user.email, JSON.stringify(user));
+//       // console.log('Logged in user:', user);
+//       // console.log('User data set to currentUser:', user);
 //       navigate(
 //         user.venueManager ? '/venue-manager-dashboard' : '/user-dashboard',
 //         { replace: true }
@@ -109,10 +112,10 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../../../api/auth';
 import { FormWrapper } from '../../../components/Auth/Signup/SignUp.styles';
-import { useAuth } from '../../../contexts/AuthContext';
+import { useGlobal } from '../../../contexts/GlobalContext';
 
 const LogIn = () => {
-  const { setCurrentUser } = useAuth();
+  const { setCurrentUser } = useGlobal();
   const [activeTab, setActiveTab] = useState('user');
   const [formData, setFormData] = useState({
     email: '',

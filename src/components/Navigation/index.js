@@ -2,9 +2,9 @@
 // import { NavLink } from 'react-router-dom';
 // import { NavContainer } from './Navigation.styles';
 // import Header from '../Header';
-// import { FaBars, FaTimes } from 'react-icons/fa';
+// import { FaBars, FaTimes, FaUser } from 'react-icons/fa';
 // import { navLinks, authLinks } from '../../constants/navLinks';
-// import { useAuth } from '../../contexts/AuthContext';
+// import { useAuth } from '../../contexts/GlobalContext';
 
 // const Navigation = () => {
 //   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -48,6 +48,15 @@
 //     <li className='auth-link'>
 //       <div className='dropdown'>
 //         <button className='dropbtn' onClick={toggleDropdown}>
+//           {currentUser && currentUser.avatar ? (
+//             <img
+//               src={currentUser.avatar}
+//               alt={currentUser.name}
+//               className='user-avatar'
+//             />
+//           ) : (
+//             <FaUser className='user-avatar-placeholder' />
+//           )}
 //           {currentUser && currentUser.name ? currentUser.name : 'User'}{' '}
 //           <i className={`arrow-down ${isMenuOpen ? 'opened' : ''}`}></i>
 //         </button>
@@ -159,12 +168,12 @@ import { NavContainer } from './Navigation.styles';
 import Header from '../Header';
 import { FaBars, FaTimes, FaUser } from 'react-icons/fa';
 import { navLinks, authLinks } from '../../constants/navLinks';
-import { useAuth } from '../../contexts/AuthContext';
+import { useGlobal } from '../../contexts/GlobalContext';
 
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { currentUser, logout } = useAuth();
+  const { currentUser, logout } = useGlobal();
   const dropdownRef = useRef(null);
 
   const handleClickOutside = (event) => {

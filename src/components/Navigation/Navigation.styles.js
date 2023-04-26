@@ -53,7 +53,7 @@ export const NavContainer = styled.nav`
         color: var(--primary-color);
         font-size: 1rem;
         text-transform: capitalize;
-        letter-spacing: var(--spacing);
+        letter-spacing: var(--letter-spacing);
         padding: 0.5rem;
         &:hover {
           border-bottom: 2px solid var(--primary-color);
@@ -173,7 +173,7 @@ export const NavContainer = styled.nav`
     cursor: pointer;
     font-size: 1rem;
     text-transform: capitalize;
-    letter-spacing: var(--spacing);
+    letter-spacing: var(--letter-spacing);
     outline: none;
     background: var(--primary-color);
     color: var(--secondary-color);
