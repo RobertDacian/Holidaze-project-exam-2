@@ -158,7 +158,8 @@ export const login = async (
       throw new Error('Server response does not match login credentials');
     }
 
-    const userData = { name, email, avatar, venueManager };
+    const userData = { name, email, avatar, venueManager, token: accessToken };
+
     localStorage.setItem('accessToken', accessToken);
 
     console.log('Logged in user:', userData);
