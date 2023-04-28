@@ -1,17 +1,20 @@
 // import React, { createContext, useContext, useState, useEffect } from 'react';
 
-// // Auth Context
-// const AuthContext = createContext();
+// // Global Context
+// const GlobalContext = createContext();
 
-// export const useAuth = () => {
-//   return useContext(AuthContext);
+// export const useGlobal = () => {
+//   return useContext(GlobalContext);
 // };
 
-// export const AuthProvider = ({ children }) => {
+// export const GlobalProvider = ({ children }) => {
 //   const [currentUser, setCurrentUser] = useState(() => {
 //     const storedUser = localStorage.getItem('currentUser');
 //     return storedUser ? JSON.parse(storedUser) : null;
 //   });
+
+//   const [venues, setVenues] = useState([]);
+//   const [venueDetails, setVenueDetails] = useState(null);
 
 //   useEffect(() => {
 //     if (currentUser) {
@@ -31,32 +34,19 @@
 //     currentUser,
 //     setCurrentUser,
 //     logout,
-//   };
-
-//   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-// };
-
-// // Venues Context
-// const VenuesContext = createContext();
-
-// export const useVenues = () => {
-//   return useContext(VenuesContext);
-// };
-
-// export const VenuesProvider = ({ children }) => {
-//   const [venues, setVenues] = useState([]);
-
-//   const value = {
 //     venues,
 //     setVenues,
+//     venueDetails,
+//     setVenueDetails,
 //   };
 
 //   return (
-//     <VenuesContext.Provider value={value}>{children}</VenuesContext.Provider>
+//     <GlobalContext.Provider value={value}>{children}</GlobalContext.Provider>
 //   );
 // };
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import * as bookingsAPI from '../api/bookings';
 
 // Global Context
 const GlobalContext = createContext();
@@ -73,6 +63,8 @@ export const GlobalProvider = ({ children }) => {
 
   const [venues, setVenues] = useState([]);
   const [venueDetails, setVenueDetails] = useState(null);
+  const [bookings, setBookings] = useState([]);
+  const [bookingDetails, setBookingDetails] = useState(null);
 
   useEffect(() => {
     if (currentUser) {
@@ -88,6 +80,44 @@ export const GlobalProvider = ({ children }) => {
     console.log('User logged out and local storage cleared');
   };
 
+  const fetchBookings = async (venueId) => {
+    try {
+      const fetchedBookings = await bookingsAPI.fetchBookings(
+        venueId,
+        currentUser.token
+      );
+      setBookings(fetchedBookings);
+    } catch (error) {
+      console.log('Error fetching bookings:', error);
+    }
+  };
+
+  const fetchBookingById = async (bookingId) => {
+    try {
+      const fetchedBookingDetails = await bookingsAPI.fetchBookingById(
+        bookingId,
+        currentUser.token
+      );
+      setBookingDetails(fetchedBookingDetails);
+    } catch (error) {
+      console.log('Error fetching booking details:', error);
+    }
+  };
+
+  const createBookingForCurrentUser = async (bookingData) => {
+    try {
+      const newBooking = await bookingsAPI.createBooking(
+        bookingData,
+        currentUser.token,
+        currentUser.id,
+        venueDetails.id
+      );
+      setBookings((prevBookings) => [...prevBookings, newBooking]);
+    } catch (error) {
+      console.log('Error creating booking:', error);
+    }
+  };
+
   const value = {
     currentUser,
     setCurrentUser,
@@ -96,6 +126,13 @@ export const GlobalProvider = ({ children }) => {
     setVenues,
     venueDetails,
     setVenueDetails,
+    bookings,
+    setBookings,
+    bookingDetails,
+    setBookingDetails,
+    fetchBookings,
+    fetchBookingById,
+    createBookingForCurrentUser,
   };
 
   return (
