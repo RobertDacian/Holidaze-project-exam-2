@@ -234,20 +234,13 @@ const VenuesComponent = () => {
   };
   return (
     <>
-      <div className='container wrapper-center'>
+      <div className='wrapper-center '>
         <Filter
           onFilter={onFilter}
           onClearFilters={onClearFilters}
           filterErrors={errors}
           filterErrorType={errorType}
         />
-        {/* <Error>
-          {errors.filterError && (
-            <p className={errorType === 'warning' ? 'warning' : 'error'}>
-              {errors.filterError}
-            </p>
-          )}
-        </Error> */}
       </div>
 
       <VenuesWrapper>

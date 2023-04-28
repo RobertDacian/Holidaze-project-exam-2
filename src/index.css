@@ -58,7 +58,7 @@ body {
     Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   line-height: 1.5rem;
   background-color: var(--white-color);
-  color: var(--text-color);
+  color: var(--primary-color-light);
   font-weight: var(--font-weight-regular);
   font-size: var(--regular-font-size);
   margin: 0;
@@ -158,28 +158,40 @@ h5 {
 }
 p {
   color: var(--primary-color-light);
+  font-weight: var(--font-weight-regular);
+}
+
+.p-bold {
+  color: var(--primary-color);
+  font-weight: var(--font-weight-bold);
 }
 .p-dark {
   color: var(--primary-color);
+  font-weight: var(--font-weight-regular);
 }
 .p-white {
   color: var(--white-color);
+  font-weight: var(--font-weight-regular);
 }
 
 .p-gray {
   color: var(--gray-color);
+  font-weight: var(--font-weight-regular);
 }
 .p-small {
-  font-size: var(--small-font-size);
+  font-size: var(--small-font-size) !important;
   color: var(--primary-color-light);
+  font-weight: var(--font-weight-regular);
 }
 
 .span-primary {
   color: var(--primary-color);
+  font-weight: var(--font-weight-regular);
 }
 
 .span-secondary {
   color: var(--secondary-color);
+  font-weight: var(--font-weight-regular);
 }
 
 input {
@@ -255,6 +267,7 @@ input:focus {
   cursor: pointer;
   border-radius: var(--radius);
   border-color: transparent;
+  width: auto;
 }
 .btn:hover {
   background-color: var(--transition-primary-color);
