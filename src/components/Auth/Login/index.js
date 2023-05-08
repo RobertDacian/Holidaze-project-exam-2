@@ -1,11 +1,12 @@
+// //In src/components/Auth/Login/index.js i have the following code:
 // import React, { useState } from 'react';
 // import { useNavigate } from 'react-router-dom';
 // import { login } from '../../../api/auth';
 // import { FormWrapper } from '../../../components/Auth/Signup/SignUp.styles';
-// import { useAuth } from '../../../contexts/GlobalContext';
+// import { useGlobal } from '../../../contexts/GlobalContext';
 
 // const LogIn = () => {
-//   const { setCurrentUser } = useAuth();
+//   const { setCurrentUser } = useGlobal();
 //   const [activeTab, setActiveTab] = useState('user');
 //   const [formData, setFormData] = useState({
 //     email: '',
@@ -107,7 +108,7 @@
 // };
 
 // export default LogIn;
-
+//In src/components/Auth/Login/index.js i have the following code:
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../../../api/auth';
@@ -167,52 +168,58 @@ const LogIn = () => {
   };
 
   return (
-    <FormWrapper>
-      <div className='tabs'>
-        <button
-          className={activeTab === 'user' ? 'active' : ''}
-          onClick={() => handleClick('user')}
-        >
-          I am a user
-        </button>
-        <button
-          className={activeTab === 'venue' ? 'active' : ''}
-          onClick={() => handleClick('venue')}
-        >
-          I am a Venue Manager
-        </button>
-      </div>
+    <div className='wrapper-center'>
+      <FormWrapper>
+        <div className='tabs'>
+          <button
+            className={activeTab === 'user' ? 'active' : ''}
+            onClick={() => handleClick('user')}
+          >
+            I am a user
+          </button>
+          <button
+            className={activeTab === 'venue' ? 'active' : ''}
+            onClick={() => handleClick('venue')}
+          >
+            I am a Venue Manager
+          </button>
+        </div>
 
-      <form onSubmit={handleSubmit}>
-        <h4>{activeTab === 'user' ? 'User Log In' : 'Venue Manager Log In'}</h4>
-        <div>
-          <label htmlFor='email'>Email:</label>
-          <input
-            type='email'
-            id='email'
-            name='email'
-            value={formData.email}
-            onChange={handleInputChange}
-            placeholder='Your email here'
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor='password'>Password:</label>
-          <input
-            type='password'
-            id='password'
-            name='password'
-            value={formData.password}
-            onChange={handleInputChange}
-            placeholder='********'
-            required
-          />
-        </div>
-        <button type='submit'>Log In</button>
-      </form>
-      {formError && <p className='error'>{formError}</p>}
-    </FormWrapper>
+        <form onSubmit={handleSubmit}>
+          <h4>
+            {activeTab === 'user' ? 'User Log In' : 'Venue Manager Log In'}
+          </h4>
+          <div>
+            <label htmlFor='email'>Email:</label>
+            <input
+              type='email'
+              id='email'
+              name='email'
+              value={formData.email}
+              onChange={handleInputChange}
+              placeholder='Your email here'
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor='password'>Password:</label>
+            <input
+              type='password'
+              id='password'
+              name='password'
+              value={formData.password}
+              onChange={handleInputChange}
+              placeholder='********'
+              required
+            />
+          </div>
+          <button className='btn' type='submit'>
+            Log In
+          </button>
+        </form>
+        {formError && <p className='error'>{formError}</p>}
+      </FormWrapper>
+    </div>
   );
 };
 

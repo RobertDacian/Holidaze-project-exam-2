@@ -1,11 +1,12 @@
+// //In src/components/Auth/Signup/index.js i have the following code:
 // import React, { useState, useRef } from 'react';
 // import { useNavigate } from 'react-router-dom';
 // import { registerUser, registerVenueManager } from '../../../api/auth';
 // import { FormWrapper } from './SignUp.styles';
-// import { useAuth } from '../../../contexts/GlobalContext';
+// import { useGlobal } from '../../../contexts/GlobalContext';
 
 // const SignUp = () => {
-//   const { setCurrentUser } = useAuth();
+//   const { setCurrentUser } = useGlobal();
 //   const [activeTab, setActiveTab] = useState('user');
 //   const [formData, setFormData] = useState({
 //     name: '',
@@ -43,7 +44,6 @@
 //   const handleSubmit = (event) => {
 //     event.preventDefault();
 
-//     // Check if the name length is greater than 16 characters
 //     if (formData.name.length > 16) {
 //       setFormError('Name must be no longer than 16 characters');
 //       return;
@@ -180,6 +180,7 @@
 
 // export default SignUp;
 
+//In src/components/Auth/Signup/index.js i have the following code:
 import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { registerUser, registerVenueManager } from '../../../api/auth';
@@ -281,81 +282,85 @@ const SignUp = () => {
   };
 
   return (
-    <FormWrapper>
-      <div className='tabs'>
-        <button
-          className={activeTab === 'user' ? 'active' : ''}
-          onClick={() => handleClick('user')}
-        >
-          I am a user
-        </button>
-        <button
-          className={activeTab === 'venue' ? 'active' : ''}
-          onClick={() => handleClick('venue')}
-        >
-          I am a Venue Manager
-        </button>
-      </div>
+    <div className='wrapper-center'>
+      <FormWrapper>
+        <div className='tabs'>
+          <button
+            className={activeTab === 'user' ? 'active' : ''}
+            onClick={() => handleClick('user')}
+          >
+            I am a user
+          </button>
+          <button
+            className={activeTab === 'venue' ? 'active' : ''}
+            onClick={() => handleClick('venue')}
+          >
+            I am a Venue Manager
+          </button>
+        </div>
 
-      <form onSubmit={handleSubmit}>
-        <h4>
-          {activeTab === 'user' ? 'User Sign Up' : 'Venue Manager Sign Up'}
-        </h4>
-        <div>
-          <label htmlFor='name'>Name:</label>
-          <input
-            type='text'
-            id='name'
-            name='name'
-            value={formData.name}
-            onChange={handleInputChange}
-            placeholder='Your name here'
-            required
-            ref={nameInput}
-          />
-        </div>
-        <div>
-          <label htmlFor='email'>Email:</label>
-          <input
-            type='email'
-            id='email'
-            name='email'
-            value={formData.email}
-            onChange={handleInputChange}
-            placeholder='Your email here'
-            required
-            ref={emailInput}
-          />
-        </div>
-        <div>
-          <label htmlFor='avatar'>Avatar:</label>
-          <input
-            type='url'
-            id='avatar'
-            name='avatar'
-            placeholder='https://example.com/image.jpg'
-            value={formData.avatar}
-            onChange={handleInputChange}
-          />
-        </div>
-        <div>
-          <label htmlFor='password'>Password:</label>
-          <input
-            type='password'
-            id='password'
-            name='password'
-            value={formData.password}
-            onChange={handleInputChange}
-            placeholder='********'
-            required
-            minLength='8'
-            ref={passwordInput}
-          />
-        </div>
-        <button type='submit'>Sign Up</button>
-      </form>
-      {formError && <p className='error'>{formError}</p>}
-    </FormWrapper>
+        <form onSubmit={handleSubmit}>
+          <h4>
+            {activeTab === 'user' ? 'User Sign Up' : 'Venue Manager Sign Up'}
+          </h4>
+          <div>
+            <label htmlFor='name'>Name:</label>
+            <input
+              type='text'
+              id='name'
+              name='name'
+              value={formData.name}
+              onChange={handleInputChange}
+              placeholder='Your name here'
+              required
+              ref={nameInput}
+            />
+          </div>
+          <div>
+            <label htmlFor='email'>Email:</label>
+            <input
+              type='email'
+              id='email'
+              name='email'
+              value={formData.email}
+              onChange={handleInputChange}
+              placeholder='Your email here'
+              required
+              ref={emailInput}
+            />
+          </div>
+          <div>
+            <label htmlFor='avatar'>Avatar:</label>
+            <input
+              type='url'
+              id='avatar'
+              name='avatar'
+              placeholder='https://example.com/image.jpg'
+              value={formData.avatar}
+              onChange={handleInputChange}
+            />
+          </div>
+          <div>
+            <label htmlFor='password'>Password:</label>
+            <input
+              type='password'
+              id='password'
+              name='password'
+              value={formData.password}
+              onChange={handleInputChange}
+              placeholder='********'
+              required
+              minLength='8'
+              ref={passwordInput}
+            />
+          </div>
+          <button className='btn' type='submit'>
+            Sign Up
+          </button>
+        </form>
+        {formError && <p className='error'>{formError}</p>}
+      </FormWrapper>
+    </div>
   );
 };
 

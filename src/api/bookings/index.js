@@ -1,66 +1,114 @@
+// In src/api/booking/index.js i have the following code:
 import {
   API_BASE_URL,
   API_BOOKINGS,
   API_BOOKING,
 } from '../../constants/constants';
-// import { useGlobal } from '../../contexts/GlobalContext';
 
-const sendRequest = async (endpoint, token) => {
+const sendRequest = async (url, method, body = null, token = null) => {
   try {
-    const url = `${API_BASE_URL}${endpoint}`;
-    console.log('Requesting:', url);
-    const response = await fetch(url, {
-      headers:
-        token && token !== 'undefined'
-          ? { Authorization: `Bearer ${token}` }
-          : {},
+    const headers = new Headers({
+      'Content-Type': 'application/json',
     });
-    const responseData = await response.json();
 
-    if (!response.ok) {
-      const errorMessage =
-        responseData.errors && responseData.errors.length
-          ? responseData.errors[0].message
-          : responseData.message || 'Something went wrong';
-      throw new Error(errorMessage);
+    if (token) {
+      headers.append('Authorization', `Bearer ${token}`);
     }
 
-    return responseData;
+    const options = {
+      method,
+      headers,
+      body: body ? JSON.stringify(body) : null,
+    };
+
+    console.log('Request URL:', url);
+    console.log('Request options:', options);
+
+    const response = await fetch(url, options);
+
+    if (!response.ok) {
+      const responseData = await response.json();
+      console.log('Response:', response);
+      console.log('Response data:', responseData);
+      throw new Error(`Error: ${responseData.status}`);
+    }
+
+    return response.json();
   } catch (error) {
-    console.log('Error:', error);
+    console.error('Error:', error);
     throw error;
   }
 };
 
-export const fetchBookings = async (venueId, token) => {
-  const endpoint = API_BOOKINGS + '?_venue=true&venue.id=' + venueId;
-  return await sendRequest(endpoint, token);
+export const fetchUserBookings = async (profileName, token) => {
+  const url = `${API_BASE_URL}/holidaze/profiles/${profileName}/bookings`;
+
+  const requestOptions = {
+    method: 'GET',
+    headers: new Headers({
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    }),
+  };
+
+  try {
+    const response = await fetch(url, requestOptions);
+    const data = await response.json();
+
+    console.log('API response:', response);
+
+    if (!response.ok) {
+      throw new Error(data.message || 'Could not fetch bookings.');
+    }
+
+    return data;
+  } catch (error) {
+    console.error('Error:', error);
+    throw error;
+  }
 };
 
 export const fetchBookingById = async (bookingId, token) => {
-  const endpoint =
-    API_BOOKING.replace(':id', bookingId) + '?_venue=true&_customer=true';
-  return await sendRequest(endpoint, token);
+  const endpoint = API_BOOKING.replace(':id', bookingId);
+  return await sendRequest(`${API_BASE_URL}${endpoint}`, 'GET', null, token);
 };
 
-export const createBooking = async (bookingData, currentUser) => {
-  const url = `${API_BASE_URL}${API_BOOKINGS}`;
-  const { dateFrom, dateTo, guests } = bookingData;
+export const createBooking = async (bookingData, currentUser, venueId) => {
+  const body = {
+    ...bookingData,
+    venueId,
+    customerId: currentUser.id,
+  };
 
-  const response = await fetch(url, {
-    method: 'POST',
+  return await sendRequest(
+    `${API_BASE_URL}${API_BOOKINGS}`,
+    'POST',
+    body,
+    currentUser.token
+  );
+};
+export const updateBooking = async (bookingId, updatedBookingData, token) => {
+  const endpoint = API_BOOKING.replace(':id', bookingId);
+  return await sendRequest(
+    `${API_BASE_URL}${endpoint}`,
+    'PUT',
+    updatedBookingData,
+    token
+  );
+};
+
+export const deleteBooking = async (bookingId, token) => {
+  const endpoint = API_BOOKINGS + '/' + bookingId;
+  const url = `${API_BASE_URL}${endpoint}`;
+  const options = {
+    method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${currentUser.token}`, // Ensure currentUser has a token property
+      Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({
-      dateFrom: new Date(dateFrom).toISOString(),
-      dateTo: new Date(dateTo).toISOString(),
-      guests,
-      customerId: currentUser.id,
-      venueId: bookingData.venueId,
-    }),
-  });
+  };
+
+  const response = await fetch(url, options);
 
   if (!response.ok) {
     const responseData = await response.json();
@@ -71,5 +119,126 @@ export const createBooking = async (bookingData, currentUser) => {
     throw new Error(errorMessage);
   }
 
-  return await response.json();
+  return response.status;
 };
+
+// // In src/api/booking/index.js i have the following code:
+// import {
+//   API_BASE_URL,
+//   API_BOOKINGS,
+//   API_BOOKING,
+// } from '../../constants/constants';
+
+// const sendRequest = async (url, method, body = null, token = null) => {
+//   try {
+//     const headers = new Headers({
+//       'Content-Type': 'application/json',
+//     });
+
+//     if (token) {
+//       headers.append('Authorization', `Bearer ${token}`);
+//     }
+
+//     const options = {
+//       method,
+//       headers,
+//       body: body ? JSON.stringify(body) : null,
+//     };
+
+//     console.log('Request URL:', url);
+//     console.log('Request options:', options);
+
+//     const response = await fetch(url, options);
+
+//     if (!response.ok) {
+//       const responseData = await response.json();
+//       console.log('Response:', response);
+//       console.log('Response data:', responseData);
+//       throw new Error(`Error: ${responseData.status}`);
+//     }
+
+//     return response.json();
+//   } catch (error) {
+//     console.error('Error:', error);
+//     throw error;
+//   }
+// };
+
+// // src/api/bookings/index.js
+
+// export const fetchUserBookings = async (profileName, token) => {
+//   const url = `${API_BASE_URL}/holidaze/profiles/${profileName}/bookings`;
+
+//   const requestOptions = {
+//     method: 'GET',
+//     headers: new Headers({
+//       'Content-Type': 'application/json',
+//       'x-access-token': token,
+//     }),
+//   };
+
+//   const response = await fetch(url, requestOptions);
+//   const data = await response.json();
+
+//   console.log('API response:', response);
+
+//   if (!response.ok) {
+//     throw new Error(data.message || 'Could not fetch bookings.');
+//   }
+
+//   return data;
+// };
+
+// // export const fetchBookingById = async (bookingId, token) => {
+// //   const endpoint = API_BOOKING.replace(':id', bookingId);
+// //   return await sendRequest(`${API_BASE_URL}${endpoint}`, 'GET', null, token);
+// // };
+
+// export const createBooking = async (bookingData, currentUser, venueId) => {
+//   const body = {
+//     ...bookingData,
+//     venueId,
+//     customerId: currentUser.id,
+//   };
+
+//   return await sendRequest(
+//     `${API_BASE_URL}${API_BOOKINGS}`,
+//     'POST',
+//     body,
+//     currentUser.token
+//   );
+// };
+// export const updateBooking = async (bookingId, updatedBookingData, token) => {
+//   const endpoint = API_BOOKING.replace(':id', bookingId);
+//   return await sendRequest(
+//     `${API_BASE_URL}${endpoint}`,
+//     'PUT',
+//     updatedBookingData,
+//     token
+//   );
+// };
+
+// export const deleteBooking = async (bookingId, token) => {
+//   const endpoint = API_BOOKINGS + '/' + bookingId;
+//   const url = `${API_BASE_URL}${endpoint}`;
+//   const options = {
+//     method: 'DELETE',
+//     headers: {
+//       'Content-Type': 'application/json',
+//       Authorization: `Bearer ${token}`,
+//     },
+//   };
+
+//   const response = await fetch(url, options);
+
+//   if (!response.ok) {
+//     const responseData = await response.json();
+//     const errorMessage =
+//       responseData.errors && responseData.errors.length
+//         ? responseData.errors[0].message
+//         : responseData.message || 'Something went wrong';
+//     throw new Error(errorMessage);
+//   }
+
+//   return response.status;
+// };

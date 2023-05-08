@@ -1,55 +1,71 @@
-// import React, { useEffect, useState, useMemo } from 'react';
+// //In src/components/Venues/AllVenues/index.js i have the following code:
+// import React, { useEffect, useState } from 'react';
+// import { MdImage } from 'react-icons/md';
 // import { useGlobal } from '../../../contexts/GlobalContext';
 // import { VenuesWrapper, VenueCard } from './AllVenues.styles';
 // import { fetchVenues } from '../../../api/venues';
 // import { Link } from 'react-router-dom';
 // import { calculateRatingStars } from '../../../utils/ratingUtils';
 // import Filter from '../../Filters';
-// // import { useFormErrors } from '../../../components/common/Errors';
-// const filterVenues = (venues, filter, setError) => {
-//   const filteredVenues = venues.filter((venue) => {
-//     const locationMatch =
-//       venue.location.city
-//         .toLowerCase()
-//         .includes(filter.location.toLowerCase()) ||
-//       venue.location.country
-//         .toLowerCase()
-//         .includes(filter.location.toLowerCase());
-//     return locationMatch;
-//   });
-
-//   const guestsMatchingVenues = filteredVenues.filter(
-//     (venue) => venue.maxGuests >= filter.guests
-//   );
-
-//   if (filteredVenues.length === 0 && filter.location) {
-//     setError(
-//       "Unfortunately, we couldn't find any venues matching your criteria."
-//     );
-//     return [];
-//   } else if (guestsMatchingVenues.length > 0) {
-//     setError('');
-//     return guestsMatchingVenues;
-//   } else if (filteredVenues.length > 0) {
-//     setError(
-//       'No venues match the guest number you entered, but other options are available in that location.'
-//     );
-//     return filteredVenues;
-//   } else {
-//     setError('');
-//     return [];
-//   }
-// };
+// import useFormErrors from '../../common/Errors';
 
 // const VenuesComponent = () => {
 //   const { venues, setVenues } = useGlobal();
 //   const [visibleVenues, setVisibleVenues] = useState(9);
-//   const [error, setError] = useState('');
+//   const [errors, setError, clearError] = useFormErrors({
+//     filterError: '',
+//   });
+//   const [errorType, setErrorType] = useState('');
 
 //   const [filter, setFilter] = useState({
 //     location: '',
 //     guests: '',
 //   });
+
+//   const [filteredVenues, setFilteredVenues] = useState([]);
+
+//   useEffect(() => {
+//     const filterVenues = () => {
+//       const newFilteredVenues = venues.filter((venue) => {
+//         const locationMatch =
+//           venue.location.city
+//             .toLowerCase()
+//             .includes(filter.location.toLowerCase()) ||
+//           venue.location.country
+//             .toLowerCase()
+//             .includes(filter.location.toLowerCase());
+//         return locationMatch;
+//       });
+
+//       const guestsMatchingVenues = newFilteredVenues.filter(
+//         (venue) => venue.maxGuests >= filter.guests
+//       );
+
+//       if (newFilteredVenues.length === 0 && filter.location) {
+//         setError(
+//           'filterError',
+//           "Unfortunately, we couldn't find any venues matching your criteria."
+//         );
+//         setErrorType('danger');
+//         setFilteredVenues([]);
+//       } else if (guestsMatchingVenues.length > 0) {
+//         clearError('filterError');
+//         setFilteredVenues(guestsMatchingVenues);
+//       } else if (newFilteredVenues.length > 0) {
+//         setError(
+//           'filterError',
+//           'No venues match the guest number you entered, but other options are available in that location.'
+//         );
+//         setErrorType('warning');
+//         setFilteredVenues(newFilteredVenues);
+//       } else {
+//         clearError('filterError');
+//         setFilteredVenues([]);
+//       }
+//     };
+
+//     filterVenues();
+//   }, [venues, filter, setError, clearError]);
 
 //   const onFilter = (newFilter) => {
 //     setFilter(newFilter);
@@ -58,7 +74,7 @@
 
 //   const onClearFilters = () => {
 //     setFilter({ location: '', guests: '' });
-//     setError('');
+//     clearError('filterError');
 //   };
 
 //   useEffect(() => {
@@ -81,28 +97,35 @@
 //   const loadMoreVenues = () => {
 //     setVisibleVenues((prevVisibleVenues) => prevVisibleVenues + 9);
 //   };
-
-//   const filteredVenues = useMemo(
-//     () => filterVenues(venues, filter, setError),
-//     [venues, filter, setError]
-//   );
-
 //   return (
 //     <>
-//       <div className='container wrapper-center'>
-//         <Filter onFilter={onFilter} onClearFilters={onClearFilters} />
+//       <div className='wrapper-center '>
+//         <Filter
+//           onFilter={onFilter}
+//           onClearFilters={onClearFilters}
+//           filterErrors={errors}
+//           filterErrorType={errorType}
+//         />
 //       </div>
-//       {error && <p className='error'>{error}</p>}
+
 //       <VenuesWrapper>
 //         {Array.isArray(filteredVenues) &&
 //           filteredVenues.slice(0, visibleVenues).map((venue) => (
 //             <VenueCard key={venue.id}>
 //               <Link to={`/venues/${venue.id}`}>
-//                 <img
-//                   className='card-img'
-//                   src={venue.media[0]}
-//                   alt={venue.name}
-//                 />
+//                 {venue.media[0] ? (
+//                   <img
+//                     className='card-img'
+//                     src={venue.media[0]}
+//                     alt={venue.name}
+//                   />
+//                 ) : (
+//                   <MdImage
+//                     className='card-img'
+//                     size={200}
+//                     color={'var(--primary-color)'}
+//                   />
+//                 )}
 //                 <div className='card-header mt-1 '>
 //                   <h5>{venue.name}</h5>
 //                   <p className='p-small'>
@@ -135,7 +158,9 @@
 
 // export default VenuesComponent;
 
+//In src/components/Venues/AllVenues/index.js i have the following code:
 import React, { useEffect, useState } from 'react';
+import { MdImage } from 'react-icons/md';
 import { useGlobal } from '../../../contexts/GlobalContext';
 import { VenuesWrapper, VenueCard } from './AllVenues.styles';
 import { fetchVenues } from '../../../api/venues';
@@ -248,11 +273,19 @@ const VenuesComponent = () => {
           filteredVenues.slice(0, visibleVenues).map((venue) => (
             <VenueCard key={venue.id}>
               <Link to={`/venues/${venue.id}`}>
-                <img
-                  className='card-img'
-                  src={venue.media[0]}
-                  alt={venue.name}
-                />
+                {venue.media[0] ? (
+                  <img
+                    className='card-img'
+                    src={venue.media[0]}
+                    alt={venue.name}
+                  />
+                ) : (
+                  <MdImage
+                    className='card-img'
+                    size={200}
+                    color={'var(--primary-color)'}
+                  />
+                )}
                 <div className='card-header mt-1 '>
                   <h5>{venue.name}</h5>
                   <p className='p-small'>

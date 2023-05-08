@@ -19,7 +19,7 @@ export const Error = styled.p`
   }
 
   .success {
-    background-color: var(--clr-green-light);
+    background-color: var(--clr-green-dark);
     color: var(--white-color);
     padding: 10px 20px;
     margin-top: 20px;

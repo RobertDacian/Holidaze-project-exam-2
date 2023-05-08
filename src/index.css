@@ -8,6 +8,7 @@
   --transition-secondary-color: #ebd1b5;
   --link-color: #2f49a7;
   --gray-color: #6a6d75;
+  --gray-color-light: #efefef;
 
   --light-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
   --dark-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
@@ -265,7 +266,7 @@ input:focus {
   transition: var(--transition);
   font-size: 1rem;
   cursor: pointer;
-  border-radius: var(--radius);
+  /* border-radius: var(--radius); */
   border-color: transparent;
   width: auto;
 }
@@ -283,7 +284,7 @@ input:focus {
   transition: var(--transition);
   font-size: 1rem;
   cursor: pointer;
-  border-radius: var(--radius);
+  /* border-radius: var(--radius); */
   border-color: transparent;
 }
 .btn-secondary:hover {

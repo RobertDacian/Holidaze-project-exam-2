@@ -60,6 +60,9 @@ export const FormWrapper = styled.div`
         font-size: 14px;
         color: var(--primary-color);
         outline: none;
+        &:disabled {
+          background: var(--gray-color-light);
+        }
 
         &::placeholder {
           color: var(--primary-color-light);
@@ -94,8 +97,4 @@ export const FormWrapper = styled.div`
     margin-top: 20px;
     text-align: center;
   }
-`;
-
-export const Title = styled.h1`
-  /* Add your title styles here */
 `;
