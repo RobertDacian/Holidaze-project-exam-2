@@ -67,8 +67,9 @@
 // };
 
 // export default UserDashboard;
+// src/components/DashboardComponent/UserDashboard/index.js
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useGlobal } from '../../../contexts/GlobalContext';
 import BookingCard from '../BookingCard';
 import ProfileCard from '../ProfileCard';
@@ -117,6 +118,7 @@ const UserDashboard = () => {
                         booking={booking}
                         venue={booking.venue}
                         handleCancelBooking={handleDeleteBooking}
+                        token={currentUser.token} // Pass the token prop
                       />
                     ))
                   ) : (

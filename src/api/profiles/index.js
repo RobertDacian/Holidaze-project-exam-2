@@ -134,9 +134,9 @@ const sendRequest = async (endpoint, token) => {
   return await response.json();
 };
 
-export const fetchProfiles = async () => {
+export async function fetchProfiles() {
   return await sendRequest(API_PROFILES);
-};
+}
 
 export const fetchProfileByName = async (name) => {
   const endpoint = API_PROFILE.replace(':name', name);

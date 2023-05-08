@@ -8,7 +8,6 @@ import React, {
 } from 'react';
 import * as bookingsAPI from '../api/bookings';
 import * as profilesAPI from '../api/profiles';
-import { fetchUserBookings } from '../api/bookings';
 
 // Global Context
 const GlobalContext = createContext();
@@ -23,6 +22,11 @@ export const GlobalProvider = ({ children }) => {
     return storedUser ? JSON.parse(storedUser) : null;
   });
 
+  const [token, setToken] = useState(() => {
+    const storedToken = localStorage.getItem('token');
+    return storedToken || null;
+  });
+
   const [venues, setVenues] = useState([]);
   const [venueDetails, setVenueDetails] = useState(null);
   const [bookings, setBookings] = useState([]);
@@ -31,8 +35,12 @@ export const GlobalProvider = ({ children }) => {
   useEffect(() => {
     if (currentUser) {
       localStorage.setItem('currentUser', JSON.stringify(currentUser));
+      localStorage.setItem('token', currentUser.token);
+      setToken(currentUser.token);
     } else {
       localStorage.removeItem('currentUser');
+      localStorage.removeItem('token');
+      setToken(null);
     }
   }, [currentUser]);
 
@@ -90,21 +98,37 @@ export const GlobalProvider = ({ children }) => {
   };
 
   const fetchUserBookingsFromAPI = useCallback(async () => {
+    console.log('fetchUserBookingsFromAPI called');
     try {
       if (!currentUser) {
         return;
       }
 
-      const fetchedBookings = await fetchUserBookings(
+      const fetchedBookings = await bookingsAPI.fetchUserBookings(
         currentUser.name,
         currentUser.token
       );
 
-      console.log('User bookings:', fetchedBookings);
-      setBookings(fetchedBookings);
+      const bookingsWithDetails = await Promise.all(
+        fetchedBookings.map(async (booking) => {
+          const venue = await bookingsAPI.fetchBookingById(
+            booking.id,
+            currentUser.token
+          );
+          return {
+            ...booking,
+            venueName: venue.name,
+            imageUrl: venue.media[0] || '',
+          };
+        })
+      );
+
+      console.log('User bookings:', bookingsWithDetails);
+      setBookings(bookingsWithDetails);
     } catch (error) {
       console.log('Error fetching bookings:', error);
     }
+    console.log('Current user:', currentUser);
   }, [currentUser]);
 
   useEffect(() => {
@@ -122,12 +146,28 @@ export const GlobalProvider = ({ children }) => {
     });
   };
 
-  const createBookingForCurrentUser = async (bookingData, isVenueManager) => {
+  // const createBookingForCurrentUser = async (bookingData, isVenueManager) => {
+  //   try {
+  //     const newBooking = await bookingsAPI.createBooking(
+  //       bookingData,
+  //       currentUser,
+  //       venueDetails.id
+  //     );
+  //     const newBookingWithDetails = {
+  //       ...newBooking,
+  //       venueName: venueDetails.name,
+  //       imageUrl: venueDetails.media[0] || '',
+  //     };
+  //     addBooking(newBookingWithDetails);
+  //   } catch (error) {
+  //     console.log('Error creating booking:', error);
+  //   }
+  // };
+  const createBooking = async (bookingData) => {
     try {
       const newBooking = await bookingsAPI.createBooking(
         bookingData,
-        currentUser,
-        venueDetails.id
+        currentUser.token
       );
       const newBookingWithDetails = {
         ...newBooking,
@@ -190,6 +230,8 @@ export const GlobalProvider = ({ children }) => {
   const value = {
     currentUser,
     setCurrentUser,
+    token,
+    setToken,
     logout,
     venues,
     setVenues,
@@ -197,21 +239,12 @@ export const GlobalProvider = ({ children }) => {
     setVenueDetails,
     bookings,
     setBookings,
-    // bookingDetails,
-    // fetchBookingById,
-    // setBookingDetails,
-    // fetchBookings,
-    // addBooking,
-    createBookingForCurrentUser,
+    // createBookingForCurrentUser,
+    createBooking,
     deleteBooking,
     profiles,
     setProfiles,
     fetchProfiles,
-    // profileBookings,
-    // setProfileBookings,
-    // profileVenues,
-    // setProfileVenues,
-    // fetchProfileVenues,
     updateCurrentUserProfile,
     updateProfileMedia,
     updateBooking,

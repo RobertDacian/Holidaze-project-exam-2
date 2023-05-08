@@ -53,34 +53,63 @@
 
 // export default BookingCard;
 
-//In src/components/DashboardComponent/UserDashboard/BookingCard/index.js i have the following code:
+// eslint-disable-next-line react-hooks/rules-of-hooks
+
+// src/components/DashboardComponent/UserDashboard/BookingCard/index.js
+
+// src/components/DashboardComponent/UserDashboard/BookingCard/index.js
 
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Card } from './BookingCard.styles';
-import { MdImage } from 'react-icons/md';
+import VenueDetails from '../../../components/Venues/VenueDetail';
 import UpdateDeleteBooking from '../UpdateDeleteBooking';
 import { fetchBookingById } from '../../../api/bookings';
+import { fetchVenueDetails } from '../../../api/venues';
 
 const BookingCard = (props) => {
+  console.log('Booking:', props.booking);
+
   const [bookingDetails, setBookingDetails] = useState(null);
   const [venue, setVenue] = useState(null);
 
   useEffect(() => {
     const fetchBookingDetails = async () => {
-      const token = 'token';
-      const bookingData = await fetchBookingById(props.booking.id, token);
-      setBookingDetails(bookingData);
-      setVenue(bookingData.venue);
+      const bookingData = await fetchBookingById(props.booking.id, props.token);
+      if (bookingData) {
+        setBookingDetails(bookingData);
+        if (bookingData.venue) {
+          setVenue(bookingData.venue);
+        } else if (bookingData.venueId) {
+          // Fetch venue details if they are not available in the booking object
+          const venueData = await fetchVenueDetails(
+            bookingData.venueId,
+            props.token
+          );
+          setVenue(venueData);
+        } else {
+          console.error('Error: venueId is missing in the booking object');
+        }
+      } else {
+        console.error('Error fetching booking details. Using fallback data.');
+        setVenue(props.booking.venue);
+      }
     };
     fetchBookingDetails();
-  }, [props.booking.id]);
+  }, [
+    props.booking.id,
+    props.token,
+    props.booking.venue,
+    props.booking.venueId,
+  ]);
+
+  // Initialize modalOpen state outside of the conditional statement
+  const [modalOpen, setModalOpen] = useState(false);
 
   if (!venue) {
+    console.error('Venue is undefined in the booking object:', props.booking);
     return null;
   }
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const [modalOpen, setModalOpen] = useState(false);
 
   const handleModalOpen = () => {
     setModalOpen(true);
@@ -92,20 +121,22 @@ const BookingCard = (props) => {
 
   return (
     <Card>
-      {venue.imageUrl ? (
-        <img className='card-img' src={venue.imageUrl} alt={venue.name} />
-      ) : (
-        <MdImage size={200} color={'var(--primary-color)'} />
-      )}
-      <h3>{venue.name}</h3>
-      <p>Booking ID: {bookingDetails.id}</p>
-      <p>Date from: {bookingDetails.dateFrom}</p>
-      <p>Date to: {bookingDetails.dateTo}</p>
-      <p>Guests: {bookingDetails.guests}</p>
+      <VenueDetails venueDetails={venue} isBookingCard={true} />
+      <p>Booking ID: {props.booking.id}</p>
+      <p>
+        Date from:{' '}
+        {bookingDetails ? bookingDetails.dateFrom : props.booking.dateFrom}
+      </p>
+      <p>
+        Date to: {bookingDetails ? bookingDetails.dateTo : props.booking.dateTo}
+      </p>
+      <p>
+        Guests: {bookingDetails ? bookingDetails.guests : props.booking.guests}
+      </p>
       <>
         <button onClick={handleModalOpen}>Update Booking</button>
         <UpdateDeleteBooking
-          booking={bookingDetails}
+          booking={props.booking}
           isOpen={modalOpen}
           onClose={handleModalClose}
           handleCancelBooking={props.handleCancelBooking}
@@ -118,6 +149,7 @@ const BookingCard = (props) => {
 BookingCard.propTypes = {
   booking: PropTypes.object.isRequired,
   handleCancelBooking: PropTypes.func.isRequired,
+  token: PropTypes.string.isRequired,
 };
 
 export default BookingCard;

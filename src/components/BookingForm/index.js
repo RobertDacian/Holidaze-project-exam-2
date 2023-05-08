@@ -172,7 +172,7 @@ const BookingForm = ({ venueDetails, onUpdate, booking, errorMessage }) => {
   const [guests, setGuests] = useState(1);
   const navigate = useNavigate();
   const today = new Date();
-  const { currentUser, createBookingForCurrentUser } = useGlobal();
+  const { currentUser, createBooking } = useGlobal();
 
   useEffect(() => {
     if (booking) {
@@ -208,8 +208,8 @@ const BookingForm = ({ venueDetails, onUpdate, booking, errorMessage }) => {
 
     if (startDate && endDate && currentUser) {
       const bookingData = {
-        dateFrom: startDate.toISOString().split('T')[0],
-        dateTo: endDate.toISOString().split('T')[0],
+        dateFrom: startDate.toISOString(),
+        dateTo: endDate.toISOString(),
         guests: parseInt(guests, 10),
       };
 
@@ -219,8 +219,16 @@ const BookingForm = ({ venueDetails, onUpdate, booking, errorMessage }) => {
         try {
           // Use createBookingForCurrentUser function from the context
           const isVenueManager = currentUser.role === 'venue_manager';
-          await createBookingForCurrentUser(bookingData, isVenueManager);
-
+          const newBooking = await createBooking(
+            bookingData,
+            currentUser.token
+          );
+          const newBookingWithDetails = {
+            ...newBooking,
+            venueName: venueDetails.name,
+            imageUrl: venueDetails.media[0] || '',
+          };
+          createBooking(newBookingWithDetails, isVenueManager);
           setError('bookingSuccess', 'Booking created successfully!');
           setTimeout(() => {
             navigate('/user-dashboard');

@@ -136,7 +136,7 @@
 //             <BookingForm
 //               venueDetails={venueDetails}
 //               currentUser={currentUser}
-//               venueId={venueDetails.id} // Pass the venueId as a prop
+//               venueId={venueDetails.id}
 //             />
 //           </div>
 //           <div className='tabs-wrapper'>
@@ -157,7 +157,7 @@
 
 // export default VenueDetails;
 
-//In src/components/Venues/VenueDetail/index.js i have the following code:
+// //In src/components/Venues/VenueDetail/index.js i have the following code:
 
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
@@ -167,9 +167,10 @@ import { fetchVenueDetails } from '../../../api/venues';
 import { FiCheck, FiX } from 'react-icons/fi';
 import { MdImage } from 'react-icons/md';
 import BookingForm from '../../BookingForm';
+import BookingCard from '../../DashboardComponent/BookingCard';
 import { calculateRatingStars } from '../../../utils/ratingUtils';
 
-const VenueDetails = () => {
+const VenueDetails = ({ isBookingCard = false }) => {
   const { venueDetails, setVenueDetails, currentUser } = useGlobal();
   const { id } = useParams();
   const [activeTab, setActiveTab] = useState('location');
@@ -279,25 +280,32 @@ const VenueDetails = () => {
           ) : (
             <MdImage size={200} color={'var(--primary-color)'} />
           )}
-          <div className='venue-info'>
-            <h3>{venueDetails.name}</h3>
-            <div className='rating'>
-              {calculateRatingStars(venueDetails.rating)}
-            </div>
-
-            <h4>Price: ${venueDetails.price}</h4>
-            <p>
-              {venueDetails.location.city}, {venueDetails.location.country}
-            </p>
-            <p>Max Guests: {venueDetails.maxGuests}</p>
-
-            <p>Last Updated: {venueDetails.updated}</p>
-            <BookingForm
+          {isBookingCard ? (
+            <BookingCard
               venueDetails={venueDetails}
               currentUser={currentUser}
-              venueId={venueDetails.id}
             />
-          </div>
+          ) : (
+            <div className='venue-info'>
+              <h3>{venueDetails.name}</h3>
+              <div className='rating'>
+                {calculateRatingStars(venueDetails.rating)}
+              </div>
+
+              <h4>Price: ${venueDetails.price}</h4>
+              <p>
+                {venueDetails.location.city}, {venueDetails.location.country}
+              </p>
+              <p>Max Guests: {venueDetails.maxGuests}</p>
+
+              <p>Last Updated: {venueDetails.updated}</p>
+              <BookingForm
+                venueDetails={venueDetails}
+                currentUser={currentUser}
+                venueId={venueDetails.id}
+              />
+            </div>
+          )}
           <div className='tabs-wrapper'>
             <div className='tabs'>
               <button onClick={() => setActiveTab('location')}>Location</button>

@@ -7,17 +7,16 @@ import {
 
 const sendRequest = async (url, method, body = null, token = null) => {
   try {
-    const headers = new Headers({
-      'Content-Type': 'application/json',
-    });
-
-    if (token) {
-      headers.append('Authorization', `Bearer ${token}`);
+    if (!token) {
+      throw new Error('Token is missing');
     }
 
     const options = {
       method,
-      headers,
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
       body: body ? JSON.stringify(body) : null,
     };
 
@@ -68,25 +67,73 @@ export const fetchUserBookings = async (profileName, token) => {
   }
 };
 
-export const fetchBookingById = async (bookingId, token) => {
-  const endpoint = API_BOOKING.replace(':id', bookingId);
-  return await sendRequest(`${API_BASE_URL}${endpoint}`, 'GET', null, token);
-};
-
-export const createBooking = async (bookingData, currentUser, venueId) => {
-  const body = {
-    ...bookingData,
-    venueId,
-    customerId: currentUser.id,
+export const fetchBookingById = async (id, token) => {
+  const requestOptions = {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
   };
 
-  return await sendRequest(
-    `${API_BASE_URL}${API_BOOKINGS}`,
-    'POST',
-    body,
-    currentUser.token
-  );
+  try {
+    const response = await fetch(
+      `https://api.noroff.dev/api/v1/holidaze/bookings/${id}`,
+      requestOptions
+    );
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching booking:', error);
+    return null;
+  }
 };
+
+export const createBooking = async (bookingData, token) => {
+  // Validate the booking object
+  if (!bookingData.dateFrom) {
+    throw new Error('dateFrom is required');
+  }
+
+  try {
+    const url = `${API_BASE_URL}${API_BOOKINGS}`;
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        ...bookingData,
+        dateFrom:
+          bookingData.dateFrom instanceof Date
+            ? bookingData.dateFrom.toISOString().split('T')[0]
+            : null,
+      }),
+    };
+
+    console.log('Requesting:', url);
+    const response = await fetch(url, options);
+    const responseData = await response.json();
+
+    if (!response.ok) {
+      const errorMessage =
+        responseData.errors && responseData.errors.length
+          ? responseData.errors[0].message
+          : responseData.message || 'Something went wrong';
+      throw new Error(errorMessage);
+    }
+
+    return responseData;
+  } catch (error) {
+    console.log('Error:', error);
+    throw error;
+  }
+};
+
 export const updateBooking = async (bookingId, updatedBookingData, token) => {
   const endpoint = API_BOOKING.replace(':id', bookingId);
   return await sendRequest(
