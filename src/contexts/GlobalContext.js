@@ -31,6 +31,7 @@ export const GlobalProvider = ({ children }) => {
   const [venueDetails, setVenueDetails] = useState(null);
   const [bookings, setBookings] = useState([]);
   const [profiles, setProfiles] = useState([]);
+  console.log('bookings state value:', bookings);
 
   useEffect(() => {
     if (currentUser) {
@@ -98,83 +99,69 @@ export const GlobalProvider = ({ children }) => {
   };
 
   const fetchUserBookingsFromAPI = useCallback(async () => {
-    console.log('fetchUserBookingsFromAPI called');
     try {
       if (!currentUser) {
         return;
       }
 
       const fetchedBookings = await bookingsAPI.fetchUserBookings(
-        currentUser.name,
-        currentUser.token
+        currentUser, // Pass the whole currentUser object
+        currentUser.token,
+        currentUser.venueManager
       );
 
       const bookingsWithDetails = await Promise.all(
         fetchedBookings.map(async (booking) => {
-          const venue = await bookingsAPI.fetchBookingById(
+          const bookingData = await bookingsAPI.fetchBookingById(
             booking.id,
-            currentUser.token
+            currentUser.token,
+            { _venue: true, _customer: true }
           );
           return {
-            ...booking,
-            venueName: venue.name,
-            imageUrl: venue.media[0] || '',
+            ...bookingData,
+            venueName: bookingData.venue.name,
+            imageUrl: bookingData.venue.media[0] || '',
+            venueManager: currentUser.venueManager ? true : undefined,
           };
         })
       );
 
-      console.log('User bookings:', bookingsWithDetails);
       setBookings(bookingsWithDetails);
     } catch (error) {
       console.log('Error fetching bookings:', error);
     }
-    console.log('Current user:', currentUser);
   }, [currentUser]);
 
   useEffect(() => {
     fetchUserBookingsFromAPI();
   }, [fetchUserBookingsFromAPI]);
 
-  const addBooking = (newBooking) => {
-    setBookings((prevBookings) => {
-      const updatedBookings =
-        prevBookings && prevBookings.length
-          ? [...prevBookings, newBooking]
-          : [newBooking];
-      localStorage.setItem('bookings', JSON.stringify(updatedBookings)); // Store updated bookings in local storage
-      return updatedBookings;
-    });
-  };
-
-  // const createBookingForCurrentUser = async (bookingData, isVenueManager) => {
-  //   try {
-  //     const newBooking = await bookingsAPI.createBooking(
-  //       bookingData,
-  //       currentUser,
-  //       venueDetails.id
-  //     );
-  //     const newBookingWithDetails = {
-  //       ...newBooking,
-  //       venueName: venueDetails.name,
-  //       imageUrl: venueDetails.media[0] || '',
-  //     };
-  //     addBooking(newBookingWithDetails);
-  //   } catch (error) {
-  //     console.log('Error creating booking:', error);
-  //   }
-  // };
   const createBooking = async (bookingData) => {
     try {
       const newBooking = await bookingsAPI.createBooking(
-        bookingData,
+        {
+          ...bookingData,
+          venueId: venueDetails.id,
+          venueManager: currentUser.venueManager, // Add this line
+        },
         currentUser.token
+      );
+      const venue = await bookingsAPI.fetchBookingById(
+        newBooking.id,
+        currentUser.token,
+        { _venue: true, _customer: true }
       );
       const newBookingWithDetails = {
         ...newBooking,
-        venueName: venueDetails.name,
-        imageUrl: venueDetails.media[0] || '',
+        venueName: venue.venue.name,
+        imageUrl: venue.venue.media[0] || '',
+        customer: venue.customer,
       };
-      addBooking(newBookingWithDetails);
+      setBookings((prevBookings) => {
+        const updatedBookings = [...prevBookings, newBookingWithDetails];
+        localStorage.setItem('bookings', JSON.stringify(updatedBookings));
+        return updatedBookings;
+      });
     } catch (error) {
       console.log('Error creating booking:', error);
     }

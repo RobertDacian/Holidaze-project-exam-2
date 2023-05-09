@@ -164,29 +164,63 @@ import { useParams } from 'react-router-dom';
 import { useGlobal } from '../../../contexts/GlobalContext';
 import { VenueDetailsWrapper } from './VenueDetail.styles';
 import { fetchVenueDetails } from '../../../api/venues';
+import { fetchUserBookings } from '../../../api/bookings';
 import { FiCheck, FiX } from 'react-icons/fi';
 import { MdImage } from 'react-icons/md';
 import BookingForm from '../../BookingForm';
 import BookingCard from '../../DashboardComponent/BookingCard';
 import { calculateRatingStars } from '../../../utils/ratingUtils';
 
-const VenueDetails = ({ isBookingCard = false }) => {
+const VenueDetails = ({ showBookingCard = false, venueId }) => {
   const { venueDetails, setVenueDetails, currentUser } = useGlobal();
   const { id } = useParams();
   const [activeTab, setActiveTab] = useState('location');
+  const [bookingData, setBookingData] = useState(null);
 
   useEffect(() => {
     const loadVenueDetails = async () => {
-      try {
-        const data = await fetchVenueDetails(id);
-        setVenueDetails(data);
-      } catch (error) {
-        console.error('Error fetching venue details:', error);
+      const currentId = id || venueId;
+      if (!currentId) {
+        console.error('Invalid venueId:', currentId);
+        return;
+      }
+
+      if (!venueDetails || venueDetails.id !== currentId) {
+        try {
+          const data = await fetchVenueDetails(currentId);
+          setVenueDetails(data);
+        } catch (error) {
+          console.error('Error fetching venue details:', error);
+        }
+      }
+
+      if (currentUser && currentUser.name) {
+        try {
+          const userBookings = await fetchUserBookings(
+            currentUser,
+            currentUser.token,
+            currentUser.venueManager
+          );
+          const venueBooking = userBookings.find(
+            (booking) => booking.venue.id === currentId
+          );
+          setBookingData(venueBooking);
+        } catch (error) {
+          console.error('Error fetching bookings:', error);
+        }
+      } else {
+        console.error('Invalid currentUser or profileName:', currentUser);
       }
     };
 
+    if (!id && !venueId) {
+      console.error('Invalid venueId:', id, venueId);
+      return;
+    }
     loadVenueDetails();
-  }, [id, setVenueDetails]);
+  }, [id, venueId, setVenueDetails, currentUser, venueDetails]);
+
+  console.log('venue state value:', venueDetails);
 
   const renderTabContent = () => {
     const YesIcon = () => (
@@ -280,10 +314,11 @@ const VenueDetails = ({ isBookingCard = false }) => {
           ) : (
             <MdImage size={200} color={'var(--primary-color)'} />
           )}
-          {isBookingCard ? (
+          {showBookingCard && bookingData ? (
             <BookingCard
               venueDetails={venueDetails}
               currentUser={currentUser}
+              bookingData={bookingData} // Pass booking data to BookingCard
             />
           ) : (
             <div className='venue-info'>

@@ -4,43 +4,34 @@ import {
   API_BOOKINGS,
   API_BOOKING,
 } from '../../constants/constants';
-
 const sendRequest = async (url, method, body = null, token = null) => {
-  try {
-    if (!token) {
-      throw new Error('Token is missing');
-    }
-
-    const options = {
-      method,
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      body: body ? JSON.stringify(body) : null,
-    };
-
-    console.log('Request URL:', url);
-    console.log('Request options:', options);
-
-    const response = await fetch(url, options);
-
-    if (!response.ok) {
-      const responseData = await response.json();
-      console.log('Response:', response);
-      console.log('Response data:', responseData);
-      throw new Error(`Error: ${responseData.status}`);
-    }
-
-    return response.json();
-  } catch (error) {
-    console.error('Error:', error);
-    throw error;
+  if (!token) {
+    throw new Error('Token is missing');
   }
+
+  const options = {
+    method,
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: body ? JSON.stringify(body) : null,
+  };
+
+  const response = await fetch(url, options);
+  console.log('Response from fetching user bookings:', response);
+
+  if (!response.ok) {
+    const responseData = await response.json();
+    throw new Error(`Error: ${responseData.status}`);
+  }
+
+  return response.json();
 };
 
-export const fetchUserBookings = async (profileName, token) => {
-  const url = `${API_BASE_URL}/holidaze/profiles/${profileName}/bookings`;
+export const fetchUserBookings = async (user, token, venueManager) => {
+  const userType = venueManager ? 'venueManager' : 'profiles';
+  const url = `https://api.noroff.dev/api/v1/holidaze/${userType}/${user.name}/bookings?_bookings=true`;
 
   const requestOptions = {
     method: 'GET',
@@ -52,86 +43,81 @@ export const fetchUserBookings = async (profileName, token) => {
 
   try {
     const response = await fetch(url, requestOptions);
-    const data = await response.json();
-
-    console.log('API response:', response);
 
     if (!response.ok) {
+      const data = await response.json();
       throw new Error(data.message || 'Could not fetch bookings.');
     }
 
+    const data = await response.json();
     return data;
   } catch (error) {
-    console.error('Error:', error);
+    console.error('Error fetching bookings:', error);
     throw error;
   }
 };
 
-export const fetchBookingById = async (id, token) => {
-  const requestOptions = {
-    method: 'GET',
+// bookingsAPI.js
+export const fetchBookingById = async (id, token, queryParams = {}) => {
+  const url = new URL(`https://api.noroff.dev/api/v1/holidaze/bookings/${id}`);
+  if (queryParams._venue) {
+    url.searchParams.append('_venue', 'true');
+  }
+  if (queryParams._customer) {
+    url.searchParams.append('_customer', 'true');
+  }
+  console.log('Fetching booking by ID URL:', url.toString());
+  const response = await fetch(url.toString(), {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  console.log('Response from fetching booking by ID:', response);
+
+  if (!response.ok) {
+    throw new Error('Error fetching booking by ID');
+  }
+
+  return response.json();
+};
+
+export const createBooking = async (bookingData, token) => {
+  const transformedDateFrom =
+    bookingData.dateFrom instanceof Date
+      ? bookingData.dateFrom.toISOString().split('T')[0]
+      : null;
+
+  if (!transformedDateFrom) {
+    throw new Error('dateFrom is required');
+  }
+  console.log('Creating booking with data:', bookingData);
+
+  const url = `https://api.noroff.dev/api/v1
+/holidaze/bookings`;
+  const options = {
+    method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     },
+    body: JSON.stringify({
+      ...bookingData,
+      dateFrom: transformedDateFrom,
+    }),
   };
 
-  try {
-    const response = await fetch(
-      `https://api.noroff.dev/api/v1/holidaze/bookings/${id}`,
-      requestOptions
-    );
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error('Error fetching booking:', error);
-    return null;
-  }
-};
-
-export const createBooking = async (bookingData, token) => {
-  // Validate the booking object
-  if (!bookingData.dateFrom) {
-    throw new Error('dateFrom is required');
+  const response = await fetch(url, options);
+  const responseData = await response.json();
+  console.log('Response from creating booking:', response);
+  if (!response.ok) {
+    const errorMessage =
+      responseData.errors && responseData.errors.length
+        ? responseData.errors[0].message
+        : responseData.message || 'Something went wrong';
+    throw new Error(errorMessage);
   }
 
-  try {
-    const url = `${API_BASE_URL}${API_BOOKINGS}`;
-    const options = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        ...bookingData,
-        dateFrom:
-          bookingData.dateFrom instanceof Date
-            ? bookingData.dateFrom.toISOString().split('T')[0]
-            : null,
-      }),
-    };
-
-    console.log('Requesting:', url);
-    const response = await fetch(url, options);
-    const responseData = await response.json();
-
-    if (!response.ok) {
-      const errorMessage =
-        responseData.errors && responseData.errors.length
-          ? responseData.errors[0].message
-          : responseData.message || 'Something went wrong';
-      throw new Error(errorMessage);
-    }
-
-    return responseData;
-  } catch (error) {
-    console.log('Error:', error);
-    throw error;
-  }
+  return responseData;
 };
 
 export const updateBooking = async (bookingId, updatedBookingData, token) => {

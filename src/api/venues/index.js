@@ -33,7 +33,7 @@
 // };
 
 // In src/api/venues/index.js i have the following code:
-import { API_BASE_URL, API_VENUES, API_VENUE } from '../../constants/constants';
+import { API_BASE_URL, API_VENUES } from '../../constants/constants';
 
 const sendRequest = async (
   endpoint,
@@ -81,49 +81,34 @@ export const fetchVenues = async () => {
   return await sendRequest(API_VENUES);
 };
 
-export const fetchVenueDetails = async (venueId) => {
-  const endpoint = API_VENUE.replace(':id', venueId);
-  return await sendRequest(endpoint);
-};
+// export const fetchVenueDetails = async (venueId) => {
+//   const endpoint =
+//     API_VENUE.replace(':id', venueId) + '?_owner=true&_bookings=true';
+//   return await sendRequest(endpoint);
+// };
 
-const createVenue = async (venueData) => {
-  try {
-    const response = await fetch('/holidaze/venues', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(venueData),
-    });
-    const createdVenue = await response.json();
-    console.log(createdVenue);
-  } catch (error) {
-    console.error('Error creating venue:', error);
+export const fetchVenueDetails = async (venueId, token, queryParams = {}) => {
+  const url = new URL(
+    `https://api.noroff.dev/api/v1/holidaze/venues/${venueId}`
+  );
+  if (queryParams._owner) {
+    url.searchParams.append('_owner', 'true');
   }
-};
+  if (queryParams._bookings) {
+    url.searchParams.append('_bookings', 'true');
+  }
+  console.log('Fetching venue details for venue ID:', venueId);
+  console.log('Fetching venue details URL:', url.toString());
+  const response = await fetch(url.toString(), {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  console.log('Response from fetching venue details:', response);
 
-const newVenueData = {
-  name: 'Venue Name',
-  description: 'Venue Description',
-  media: ['https://example.com/image.jpg'],
-  price: 100,
-  maxGuests: 50,
-  rating: 4.5,
-  meta: {
-    wifi: true,
-    parking: true,
-    breakfast: true,
-    pets: false,
-  },
-  location: {
-    address: '123 Main St',
-    city: 'New York',
-    zip: '10001',
-    country: 'USA',
-    continent: 'North America',
-    lat: 40.7128,
-    lng: -74.006,
-  },
-};
+  if (!response.ok) {
+    throw new Error('Error fetching venue details');
+  }
 
-createVenue(newVenueData);
+  return response.json();
+};

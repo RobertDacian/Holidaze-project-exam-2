@@ -167,6 +167,7 @@ import { Error } from '../common/Errors/Error.styles';
 import { useGlobal } from '../../contexts/GlobalContext';
 
 const BookingForm = ({ venueDetails, onUpdate, booking, errorMessage }) => {
+  console.log('venue prop value:', venueDetails);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [guests, setGuests] = useState(1);
@@ -194,6 +195,7 @@ const BookingForm = ({ venueDetails, onUpdate, booking, errorMessage }) => {
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
+    console.log('Form submitted');
 
     // Clear all errors before validating
     clearAllErrors();
@@ -208,8 +210,9 @@ const BookingForm = ({ venueDetails, onUpdate, booking, errorMessage }) => {
 
     if (startDate && endDate && currentUser) {
       const bookingData = {
-        dateFrom: startDate.toISOString(),
-        dateTo: endDate.toISOString(),
+        venueId: venueDetails.id, // Add this line
+        dateFrom: startDate, // Modify this line
+        dateTo: endDate, // Modify this line
         guests: parseInt(guests, 10),
       };
 
@@ -217,18 +220,9 @@ const BookingForm = ({ venueDetails, onUpdate, booking, errorMessage }) => {
         onUpdate(booking.id, bookingData, currentUser.token);
       } else {
         try {
-          // Use createBookingForCurrentUser function from the context
-          const isVenueManager = currentUser.role === 'venue_manager';
-          const newBooking = await createBooking(
-            bookingData,
-            currentUser.token
-          );
-          const newBookingWithDetails = {
-            ...newBooking,
-            venueName: venueDetails.name,
-            imageUrl: venueDetails.media[0] || '',
-          };
-          createBooking(newBookingWithDetails, isVenueManager);
+          console.log('Creating booking...');
+          // Use createBooking function from the context
+          await createBooking(bookingData, currentUser.token);
           setError('bookingSuccess', 'Booking created successfully!');
           setTimeout(() => {
             navigate('/user-dashboard');
