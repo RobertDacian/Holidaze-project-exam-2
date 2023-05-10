@@ -85,7 +85,12 @@ const ProfileCard = () => {
     e.preventDefault();
 
     try {
-      await updateProfileMedia(currentUser.name, avatarUrl, currentUser.token); // Pass the correct arguments
+      await updateProfileMedia(
+        currentUser.name,
+        avatarUrl,
+        currentUser.token,
+        currentUser.venueManager
+      );
       alert('Avatar media updated successfully');
     } catch (error) {
       alert(`Error updating avatar media: ${error.message}`);

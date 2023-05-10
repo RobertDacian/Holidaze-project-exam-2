@@ -146,21 +146,15 @@ const LogIn = () => {
         setCurrentUser
       );
 
-      if (user.venueManager !== isVenueManager) {
-        setFormError(
-          isVenueManager
-            ? 'Please log in as a Venue Manager.'
-            : 'Please log in as a User.'
-        );
+      if (user.status === 'error') {
+        console.log(user.message);
+        setFormError(user.message);
         return;
       }
-      // console.log('Logged in user:', user);
-      // console.log('User data set to currentUser:', user);
-      navigate(
-        user.venueManager ? '/venue-manager-dashboard' : '/user-dashboard',
-        { replace: true }
-      );
+
+      navigate(user.venueManager ? '/venues' : '/venues', { replace: true });
     } catch (error) {
+      console.log(error.message);
       setFormError(
         error.message || 'Something went wrong. Please try again later.'
       );

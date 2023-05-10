@@ -26,9 +26,9 @@ const useUserDashboard = () => {
     try {
       await updateProfileMedia(
         currentUser.name,
-        mediaType,
         mediaUrl,
-        currentUser.token
+        currentUser.token,
+        currentUser.venueManager
       );
       console.log('Profile media updated successfully.');
     } catch (error) {

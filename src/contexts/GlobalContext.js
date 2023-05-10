@@ -31,13 +31,14 @@ export const GlobalProvider = ({ children }) => {
   const [venueDetails, setVenueDetails] = useState(null);
   const [bookings, setBookings] = useState([]);
   const [profiles, setProfiles] = useState([]);
-  console.log('bookings state value:', bookings);
 
   useEffect(() => {
     if (currentUser) {
       localStorage.setItem('currentUser', JSON.stringify(currentUser));
-      localStorage.setItem('token', currentUser.token);
-      setToken(currentUser.token);
+      if (currentUser.accessToken) {
+        localStorage.setItem('token', currentUser.accessToken);
+        setToken(currentUser.accessToken);
+      }
     } else {
       localStorage.removeItem('currentUser');
       localStorage.removeItem('token');
@@ -51,7 +52,9 @@ export const GlobalProvider = ({ children }) => {
 
   const logout = () => {
     setCurrentUser(null);
+    setToken(null); // Clear token state
     localStorage.removeItem('currentUser');
+    localStorage.removeItem('token');
     console.log('User logged out and local storage cleared');
   };
 
@@ -64,21 +67,23 @@ export const GlobalProvider = ({ children }) => {
     }
   };
 
-  const updateProfileMedia = async (name, avatarUrl, token) => {
+  const updateProfileMedia = async (
+    name,
+    avatarUrl,
+    token,
+    isVenueManager = false
+  ) => {
     try {
-      const updatedUser = await profilesAPI.updateProfileMedia(
+      await profilesAPI.updateProfileMedia(
         name,
         avatarUrl,
-        token
+        token,
+        isVenueManager
       );
-      if (updatedUser) {
-        setCurrentUser((prevUser) => ({
-          ...prevUser,
-          avatar: updatedUser.avatar,
-        }));
-      } else {
-        throw new Error('Error updating profile media');
-      }
+      setCurrentUser((prevUser) => ({
+        ...prevUser,
+        avatar: avatarUrl,
+      }));
     } catch (error) {
       console.log('Error updating profile media:', error);
       throw error;
