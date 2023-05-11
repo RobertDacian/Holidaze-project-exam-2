@@ -73,7 +73,8 @@ const BookingCard = ({ booking, handleCancelBooking }) => {
   return (
     <>
       <Card>
-        {booking?.venue?.media?.[0] ? (
+        {Array.isArray(booking?.venue?.media) &&
+        booking.venue.media.length > 0 ? (
           <img src={booking.venue.media[0]} alt={booking.venue.name} />
         ) : (
           <MdImage size={200} color={'var(--primary-color)'} />

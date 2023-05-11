@@ -41,7 +41,12 @@ const sendRequest = async (url, method, body = null, token = null) => {
 //   }
 
 //   const userType = user.venueManager ? 'venueManager' : 'profiles';
-//   const url = `${API_BASE_URL}/holidaze/${userType}/${user.name}/bookings`;
+//   const url = new URL(
+//     `${API_BASE_URL}/holidaze/${userType}/${user.name}/bookings`
+//   );
+
+//   // Add _venue query parameter
+//   url.searchParams.append('_venue', 'true');
 
 //   const requestOptions = {
 //     method: 'GET',
@@ -52,7 +57,7 @@ const sendRequest = async (url, method, body = null, token = null) => {
 //   };
 
 //   try {
-//     const response = await fetch(url, requestOptions);
+//     const response = await fetch(url.toString(), requestOptions);
 
 //     if (!response.ok) {
 //       const data = await response.json();
@@ -66,17 +71,18 @@ const sendRequest = async (url, method, body = null, token = null) => {
 //     throw error;
 //   }
 // };
+
 export const fetchUserBookings = async (user, token) => {
   if (!user || !user.name) {
     throw new Error('User or user name is missing');
   }
 
-  const userType = user.venueManager ? 'venueManager' : 'profiles';
   const url = new URL(
-    `${API_BASE_URL}/holidaze/${userType}/${user.name}/bookings`
+    `${API_BASE_URL}/holidaze/profiles/${user.name}/bookings`
   );
 
-  // Add _venue query parameter
+  // Add _customer and _venue query parameters
+  url.searchParams.append('_customer', 'true');
   url.searchParams.append('_venue', 'true');
 
   const requestOptions = {
@@ -96,7 +102,7 @@ export const fetchUserBookings = async (user, token) => {
     }
 
     const data = await response.json();
-    return data;
+    return data; // it should already be an array of bookings
   } catch (error) {
     console.error('Error fetching bookings:', error);
     throw error;
