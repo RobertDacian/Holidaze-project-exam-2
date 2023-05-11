@@ -118,7 +118,7 @@ const UserDashboard = () => {
                         <BookingCard
                           key={booking.id}
                           booking={booking}
-                          currentUser={currentUser} // Pass currentUser to BookingCard
+                          currentUser={currentUser}
                           handleCancelBooking={handleDeleteBooking}
                           token={currentUser.token}
                         />
