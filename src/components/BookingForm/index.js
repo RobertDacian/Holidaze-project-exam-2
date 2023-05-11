@@ -166,8 +166,7 @@ import useFormErrors from '../common/Errors';
 import { Error } from '../common/Errors/Error.styles';
 import { useGlobal } from '../../contexts/GlobalContext';
 
-const BookingForm = ({ venueDetails, onUpdate, booking, errorMessage }) => {
-  console.log('venue prop value:', venueDetails);
+const BookingForm = ({ venueId, onUpdate, booking, errorMessage }) => {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [guests, setGuests] = useState(1);
@@ -183,7 +182,6 @@ const BookingForm = ({ venueDetails, onUpdate, booking, errorMessage }) => {
     }
   }, [booking]);
 
-  // Add error state
   const [errors, setError, clearError, clearAllErrors] = useFormErrors({
     startDate: '',
     endDate: '',
@@ -195,9 +193,6 @@ const BookingForm = ({ venueDetails, onUpdate, booking, errorMessage }) => {
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form submitted');
-
-    // Clear all errors before validating
     clearAllErrors();
 
     if (!startDate) {
@@ -208,31 +203,28 @@ const BookingForm = ({ venueDetails, onUpdate, booking, errorMessage }) => {
       setError('endDate', 'Please select an end date');
     }
 
+    if (!currentUser) {
+      setError('loginError', 'You must be logged in to create a booking');
+      console.error('currentUser is undefined:', currentUser);
+    }
+
     if (startDate && endDate && currentUser) {
       const bookingData = {
-        venueId: venueDetails.id, // Add this line
-        dateFrom: startDate, // Modify this line
-        dateTo: endDate, // Modify this line
+        dateFrom: startDate,
+        dateTo: endDate,
         guests: parseInt(guests, 10),
+        venueId: venueId, // Include the venueId in the bookingData
       };
 
-      if (onUpdate) {
-        onUpdate(booking.id, bookingData, currentUser.token);
-      } else {
-        try {
-          console.log('Creating booking...');
-          // Use createBooking function from the context
-          await createBooking(bookingData, currentUser.token);
-          setError('bookingSuccess', 'Booking created successfully!');
-          setTimeout(() => {
-            navigate('/user-dashboard');
-          }, 2000);
-        } catch (error) {
-          setError('bookingError', error.message);
-        }
+      try {
+        await createBooking(bookingData, onUpdate, booking ? booking.id : null);
+        setError('bookingSuccess', 'Booking created successfully!');
+        setTimeout(() => {
+          navigate('/user-dashboard');
+        }, 2000);
+      } catch (error) {
+        setError('bookingError', error.message);
       }
-    } else {
-      setError('loginError', 'You must be logged in to create a booking');
     }
   };
 
@@ -320,8 +312,6 @@ const BookingForm = ({ venueDetails, onUpdate, booking, errorMessage }) => {
 };
 
 BookingForm.propTypes = {
-  venueDetails: PropTypes.object.isRequired,
-  currentUser: PropTypes.object,
   onUpdate: PropTypes.func,
   booking: PropTypes.object,
   errorMessage: PropTypes.string,

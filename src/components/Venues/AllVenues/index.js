@@ -241,7 +241,7 @@ const VenuesComponent = () => {
     const loadVenues = async () => {
       try {
         const data = await fetchVenues();
-        console.log('Fetched venues:', data);
+        // console.log('Fetched venues:', data);
         if (Array.isArray(data)) {
           setVenues(data);
         } else {

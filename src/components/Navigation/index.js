@@ -4,12 +4,12 @@
 // import Header from '../Header';
 // import { FaBars, FaTimes, FaUser } from 'react-icons/fa';
 // import { navLinks, authLinks } from '../../constants/navLinks';
-// import { useAuth } from '../../contexts/GlobalContext';
+// import { useGlobal } from '../../contexts/GlobalContext';
 
 // const Navigation = () => {
 //   const [isMenuOpen, setIsMenuOpen] = useState(false);
 //   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-//   const { currentUser, logout } = useAuth();
+//   const { currentUser, logout } = useGlobal();
 //   const dropdownRef = useRef(null);
 
 //   const handleClickOutside = (event) => {

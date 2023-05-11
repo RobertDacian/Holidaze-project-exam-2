@@ -21,15 +21,15 @@ const sendRequest = async (endpoint, method, body = null, token = null) => {
     body: body instanceof FormData ? body : body ? JSON.stringify(body) : null,
   };
 
-  console.log('Request URL:', `${API_BASE_URL}${endpoint}`);
-  console.log('Request options:', requestOptions);
+  // console.log('Request URL:', `${API_BASE_URL}${endpoint}`);
+  // console.log('Request options:', requestOptions);
 
   try {
     const response = await fetch(`${API_BASE_URL}${endpoint}`, requestOptions);
     const responseData = await response.json();
 
-    console.log('Response:', response);
-    console.log('Response data:', responseData);
+    // console.log('Response:', response);
+    // console.log('Response data:', responseData);
 
     if (!response.ok) {
       const errorMessage =
@@ -118,8 +118,6 @@ export const login = async (
       throw new Error('Server response does not match login credentials');
     }
 
-    // If the venueManager status in the response does not match the isVenueManager argument,
-    // it means the user logged in from the wrong form. In this case, return an error status.
     if (venueManager !== isVenueManager) {
       return {
         status: 'error',
@@ -134,7 +132,7 @@ export const login = async (
     localStorage.setItem('accessToken', accessToken);
     localStorage.setItem('currentUser', JSON.stringify(userData));
 
-    console.log('Logged in user:', userData);
+    // console.log('Logged in user:', userData);
     setCurrentUser(userData);
 
     return userData;

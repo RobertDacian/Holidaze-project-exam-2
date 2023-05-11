@@ -78,7 +78,7 @@ import useUserDashboard from './useUserDashboard';
 
 const UserDashboard = () => {
   const { currentUser, bookings } = useGlobal();
-  console.log('User bookings:', bookings); // added log here
+  console.log('User bookings:', bookings);
 
   const { handleUpdateProfileMedia, handleDeleteBooking } = useUserDashboard();
 
@@ -113,13 +113,12 @@ const UserDashboard = () => {
                 <Grid>
                   {bookings &&
                     bookings
-                      .filter(
-                        (booking) => booking && booking.venue && booking.id
-                      )
+                      .filter((booking) => booking && booking.id)
                       .map((booking) => (
                         <BookingCard
                           key={booking.id}
                           booking={booking}
+                          currentUser={currentUser} // Pass currentUser to BookingCard
                           handleCancelBooking={handleDeleteBooking}
                           token={currentUser.token}
                         />

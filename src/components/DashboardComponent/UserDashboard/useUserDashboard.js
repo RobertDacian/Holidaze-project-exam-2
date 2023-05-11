@@ -1,3 +1,5 @@
+// src/components/DashboardComponent/UserDashboard/useUserDashboard.js
+
 import { useEffect } from 'react';
 import { useGlobal } from '../../../contexts/GlobalContext';
 import { fetchUserBookings, deleteBooking } from '../../../api/bookings';
@@ -11,7 +13,7 @@ const useUserDashboard = () => {
   useEffect(() => {
     if (currentUser) {
       console.log('Fetching user bookings for:', currentUser.name);
-      fetchUserBookings(currentUser.name, currentUser.token)
+      fetchUserBookings(currentUser, currentUser.token)
         .then((fetchedBookings) => {
           console.log('Fetched user bookings:', fetchedBookings);
           setBookings(fetchedBookings);
@@ -41,7 +43,10 @@ const useUserDashboard = () => {
       console.log('Deleting booking:', bookingId);
       await deleteBooking(bookingId, currentUser.token);
       console.log('Booking deleted successfully.');
-      fetchUserBookings(currentUser.name, currentUser.token, false, false);
+      // Remove the deleted booking from the state
+      setBookings((prevBookings) =>
+        prevBookings.filter((booking) => booking.id !== bookingId)
+      );
     } catch (error) {
       console.error('Error while canceling booking:', error);
     }

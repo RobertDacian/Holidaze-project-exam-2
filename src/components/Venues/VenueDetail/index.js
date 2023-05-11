@@ -1,32 +1,67 @@
-// //In src/components/Venues/VenueDetail/index.js i have the following code:
+// // //In src/components/Venues/VenueDetail/index.js i have the following code:
 
 // import React, { useEffect, useState } from 'react';
 // import { useParams } from 'react-router-dom';
 // import { useGlobal } from '../../../contexts/GlobalContext';
 // import { VenueDetailsWrapper } from './VenueDetail.styles';
 // import { fetchVenueDetails } from '../../../api/venues';
+// import { fetchUserBookings } from '../../../api/bookings';
 // import { FiCheck, FiX } from 'react-icons/fi';
 // import { MdImage } from 'react-icons/md';
 // import BookingForm from '../../BookingForm';
+// import BookingCard from '../../DashboardComponent/BookingCard';
 // import { calculateRatingStars } from '../../../utils/ratingUtils';
 
-// const VenueDetails = () => {
+// const VenueDetails = ({ showBookingCard = false, venueId }) => {
 //   const { venueDetails, setVenueDetails, currentUser } = useGlobal();
 //   const { id } = useParams();
 //   const [activeTab, setActiveTab] = useState('location');
+//   const [bookingData, setBookingData] = useState(null);
 
 //   useEffect(() => {
 //     const loadVenueDetails = async () => {
-//       try {
-//         const data = await fetchVenueDetails(id);
-//         setVenueDetails(data);
-//       } catch (error) {
-//         console.error('Error fetching venue details:', error);
+//       const currentId = id || venueId;
+//       if (!currentId) {
+//         console.error('Invalid venueId:', currentId);
+//         return;
+//       }
+
+//       if (!venueDetails || venueDetails.id !== currentId) {
+//         try {
+//           const data = await fetchVenueDetails(currentId);
+//           setVenueDetails(data);
+//         } catch (error) {
+//           console.error('Error fetching venue details:', error);
+//         }
+//       }
+
+//       if (currentUser && currentUser.name) {
+//         try {
+//           const userBookings = await fetchUserBookings(
+//             currentUser,
+//             currentUser.token,
+//             currentUser.venueManager
+//           );
+//           const venueBooking = userBookings.find(
+//             (booking) => booking.venue.id === currentId
+//           );
+//           setBookingData(venueBooking);
+//         } catch (error) {
+//           console.error('Error fetching bookings:', error);
+//         }
+//       } else {
+//         console.error('Invalid currentUser or profileName:', currentUser);
 //       }
 //     };
 
+//     if (!id && !venueId) {
+//       console.error('Invalid venueId:', id, venueId);
+//       return;
+//     }
 //     loadVenueDetails();
-//   }, [id, setVenueDetails]);
+//   }, [id, venueId, setVenueDetails, currentUser, venueDetails]);
+
+//   // console.log('venue state value:', venueDetails);
 
 //   const renderTabContent = () => {
 //     const YesIcon = () => (
@@ -120,25 +155,33 @@
 //           ) : (
 //             <MdImage size={200} color={'var(--primary-color)'} />
 //           )}
-//           <div className='venue-info'>
-//             <h3>{venueDetails.name}</h3>
-//             <div className='rating'>
-//               {calculateRatingStars(venueDetails.rating)}
-//             </div>
-
-//             <h4>Price: ${venueDetails.price}</h4>
-//             <p>
-//               {venueDetails.location.city}, {venueDetails.location.country}
-//             </p>
-//             <p>Max Guests: {venueDetails.maxGuests}</p>
-
-//             <p>Last Updated: {venueDetails.updated}</p>
-//             <BookingForm
+//           {showBookingCard && bookingData ? (
+//             <BookingCard
 //               venueDetails={venueDetails}
 //               currentUser={currentUser}
-//               venueId={venueDetails.id}
+//               bookingData={bookingData} // Pass booking data to BookingCard
 //             />
-//           </div>
+//           ) : (
+//             <div className='venue-info'>
+//               <h3>{venueDetails.name}</h3>
+//               <div className='rating'>
+//                 {calculateRatingStars(venueDetails.rating)}
+//               </div>
+
+//               <h4>Price: ${venueDetails.price}</h4>
+//               <p>
+//                 {venueDetails.location.city}, {venueDetails.location.country}
+//               </p>
+//               <p>Max Guests: {venueDetails.maxGuests}</p>
+
+//               <p>Last Updated: {venueDetails.updated}</p>
+//               <BookingForm
+//                 venueDetails={venueDetails}
+//                 currentUser={currentUser}
+//                 venueId={venueDetails.id}
+//               />
+//             </div>
+//           )}
 //           <div className='tabs-wrapper'>
 //             <div className='tabs'>
 //               <button onClick={() => setActiveTab('location')}>Location</button>
@@ -159,68 +202,49 @@
 
 // //In src/components/Venues/VenueDetail/index.js i have the following code:
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { useGlobal } from '../../../contexts/GlobalContext';
 import { VenueDetailsWrapper } from './VenueDetail.styles';
 import { fetchVenueDetails } from '../../../api/venues';
-import { fetchUserBookings } from '../../../api/bookings';
 import { FiCheck, FiX } from 'react-icons/fi';
 import { MdImage } from 'react-icons/md';
 import BookingForm from '../../BookingForm';
-import BookingCard from '../../DashboardComponent/BookingCard';
 import { calculateRatingStars } from '../../../utils/ratingUtils';
 
-const VenueDetails = ({ showBookingCard = false, venueId }) => {
-  const { venueDetails, setVenueDetails, currentUser } = useGlobal();
+const VenueDetails = ({ venueId, currentUser }) => {
+  const { createBooking } = useGlobal();
   const { id } = useParams();
+  const [venueDetails, setVenueDetails] = useState(null);
   const [activeTab, setActiveTab] = useState('location');
-  const [bookingData, setBookingData] = useState(null);
+  const currentVenueIdRef = useRef(null);
 
   useEffect(() => {
     const loadVenueDetails = async () => {
       const currentId = id || venueId;
+
       if (!currentId) {
         console.error('Invalid venueId:', currentId);
         return;
       }
 
-      if (!venueDetails || venueDetails.id !== currentId) {
+      if (currentVenueIdRef.current !== currentId) {
         try {
           const data = await fetchVenueDetails(currentId);
           setVenueDetails(data);
+          currentVenueIdRef.current = currentId;
         } catch (error) {
           console.error('Error fetching venue details:', error);
         }
       }
-
-      if (currentUser && currentUser.name) {
-        try {
-          const userBookings = await fetchUserBookings(
-            currentUser,
-            currentUser.token,
-            currentUser.venueManager
-          );
-          const venueBooking = userBookings.find(
-            (booking) => booking.venue.id === currentId
-          );
-          setBookingData(venueBooking);
-        } catch (error) {
-          console.error('Error fetching bookings:', error);
-        }
-      } else {
-        console.error('Invalid currentUser or profileName:', currentUser);
-      }
     };
 
-    if (!id && !venueId) {
-      console.error('Invalid venueId:', id, venueId);
-      return;
+    if (id || venueId) {
+      loadVenueDetails();
     }
-    loadVenueDetails();
-  }, [id, venueId, setVenueDetails, currentUser, venueDetails]);
+  }, [id, venueId, setVenueDetails]);
 
-  console.log('venue state value:', venueDetails);
+  // console.log('venue state value:', venueDetails);
 
   const renderTabContent = () => {
     const YesIcon = () => (
@@ -314,33 +338,26 @@ const VenueDetails = ({ showBookingCard = false, venueId }) => {
           ) : (
             <MdImage size={200} color={'var(--primary-color)'} />
           )}
-          {showBookingCard && bookingData ? (
-            <BookingCard
-              venueDetails={venueDetails}
-              currentUser={currentUser}
-              bookingData={bookingData} // Pass booking data to BookingCard
-            />
-          ) : (
-            <div className='venue-info'>
-              <h3>{venueDetails.name}</h3>
-              <div className='rating'>
-                {calculateRatingStars(venueDetails.rating)}
-              </div>
-
-              <h4>Price: ${venueDetails.price}</h4>
-              <p>
-                {venueDetails.location.city}, {venueDetails.location.country}
-              </p>
-              <p>Max Guests: {venueDetails.maxGuests}</p>
-
-              <p>Last Updated: {venueDetails.updated}</p>
-              <BookingForm
-                venueDetails={venueDetails}
-                currentUser={currentUser}
-                venueId={venueDetails.id}
-              />
+          <div className='venue-info'>
+            <h3>{venueDetails.name}</h3>
+            <div className='rating'>
+              {calculateRatingStars(venueDetails.rating)}
             </div>
-          )}
+
+            <h4>Price: ${venueDetails.price}</h4>
+            <p>
+              {venueDetails.location.city}, {venueDetails.location.country}
+            </p>
+            <p>Max Guests: {venueDetails.maxGuests}</p>
+
+            <p>Last Updated: {venueDetails.updated}</p>
+
+            <BookingForm
+              venueId={venueDetails.id} // pass venueId to BookingForm
+              currentUser={currentUser}
+              createBooking={createBooking}
+            />
+          </div>
           <div className='tabs-wrapper'>
             <div className='tabs'>
               <button onClick={() => setActiveTab('location')}>Location</button>
