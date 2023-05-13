@@ -8,7 +8,7 @@ export const Card = styled.div`
   padding: var(--card-padding);
   box-shadow: var(--light-shadow);
   max-width: 600px;
-  .card-img {
+  img {
     width: 100%;
     height: 300px;
     object-fit: cover;

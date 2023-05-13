@@ -205,6 +205,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { useGlobal } from '../../../contexts/GlobalContext';
+import { formatDate } from '../../../utils/dateFormatUtils';
 import { VenueDetailsWrapper } from './VenueDetail.styles';
 import { fetchVenueDetails } from '../../../api/venues';
 import { FiCheck, FiX } from 'react-icons/fi';
@@ -350,7 +351,7 @@ const VenueDetails = ({ venueId, currentUser }) => {
             </p>
             <p>Max Guests: {venueDetails.maxGuests}</p>
 
-            <p>Last Updated: {venueDetails.updated}</p>
+            <p>Last Updated: {formatDate(venueDetails.updated)}</p>
 
             <BookingForm
               venueId={venueDetails.id}

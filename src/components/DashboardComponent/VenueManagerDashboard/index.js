@@ -151,7 +151,7 @@ const VenueManagerDashboard = () => {
               </div>
             </div>
             {activeTab === 'bookings' && bookings && (
-              <div className='tab-content'>
+              <div className='tab-content '>
                 <Grid>
                   {bookings
                     .filter((booking) => booking && booking.id)

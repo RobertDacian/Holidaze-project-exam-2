@@ -9,6 +9,7 @@ export const Grid = styled.div`
   grid-template-columns: 1fr 1fr;
   grid-gap: 2rem;
   padding: 1rem 0;
+  width: 100%;
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
   }

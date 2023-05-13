@@ -22,7 +22,7 @@ export const Error = styled.p`
     background-color: var(--clr-green-dark);
     color: var(--white-color);
     padding: 10px 20px;
-    margin-top: 20px;
+    margin: 15px 0;
     text-align: center;
   }
 `;

@@ -22,6 +22,29 @@ export const UpdateDeleteBookingStyles = styled.div`
     width: 90%;
     outline: none;
   }
+  /* .btn-outline-green {
+    background-color: transparent !important;
+    color: var(--primary-color);
+    border: 1px solid var(--clr-green-dark);
+    &:hover {
+      background-color: var(--clr-green-dark) !important;
+      color: var(--white-color);
+    }
+  } */
+
+  .btn-outline-red {
+    background-color: transparent !important;
+    color: var(--primary-color);
+    border: 1px solid var(--clr-red-dark);
+    padding: 10px 20px;
+    margin-bottom: 15px;
+    height: 40px;
+    width: 100%;
+    &:hover {
+      background-color: var(--clr-red-dark) !important;
+      color: var(--white-color);
+    }
+  }
 
   input {
     padding: 10px;
@@ -43,7 +66,7 @@ export const UpdateDeleteBookingStyles = styled.div`
     }
   }
 
-  .btn {
+  .btn-close {
     background-color: var(--primary-color);
     color: var(--secondary-color);
     padding: 10px 20px;
@@ -58,16 +81,6 @@ export const UpdateDeleteBookingStyles = styled.div`
 
     &:hover {
       background-color: var(--primary-color-light);
-    }
-  }
-
-  .btn-outline-green {
-    background-color: transparent;
-    color: var(--primary-color);
-    border: 1px solid var(--clr-green-dark);
-    &:hover {
-      background-color: var(--clr-green-dark) !important;
-      color: var(--white-color);
     }
   }
 `;

@@ -50,6 +50,7 @@
 
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import { formatDate } from '../../../utils/dateFormatUtils';
 import { MdImage } from 'react-icons/md';
 import { Card } from './BookingCard.styles';
 import UpdateDeleteBooking from '../UpdateDeleteBooking';
@@ -86,12 +87,16 @@ const BookingCard = ({
         ) : (
           <MdImage size={200} color={'var(--primary-color)'} />
         )}
-        <p>Booking ID: {booking.id}</p>
-        <p>Date from: {booking.dateFrom}</p>
-        <p>Date to: {booking.dateTo}</p>
-        <p>Guests: {booking.guests}</p>
+        <div className='mb-2 mt-2'>
+          <h5>Booking ID: {booking.id}</h5>
+          <p>Date from: {formatDate(booking.dateFrom)}</p>
+          <p>Date to: {formatDate(booking.dateTo)}</p>
+          <p>Guests: {booking.guests}</p>
+        </div>
         <>
-          <button onClick={handleModalOpen}>Update Booking</button>
+          <button className='btn' onClick={handleModalOpen}>
+            Update Booking
+          </button>
           <UpdateDeleteBooking
             booking={booking}
             isOpen={modalOpen}

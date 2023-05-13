@@ -12,6 +12,7 @@ export const Form = styled.form`
       width: 100%;
     }
   }
+
   @media (max-width: 639px) {
     flex-direction: column;
     width: 100%;
@@ -21,14 +22,14 @@ export const Form = styled.form`
 export const FormGroup = styled.div`
   display: flex;
   flex-direction: column;
-  margin-bottom: 1rem;
+  /* margin: 0.5rem 0; */
   width: 100%;
 `;
 
 export const Label = styled.label`
   label {
     color: var(--primary-color);
-    margin-bottom: 5px;
+    margin-bottom: 10px !important;
   }
 `;
 
@@ -55,4 +56,5 @@ export const Input = styled.input`
 
 export const Button = styled.button`
   border-radius: none !important;
+  width: 100%;
 `;

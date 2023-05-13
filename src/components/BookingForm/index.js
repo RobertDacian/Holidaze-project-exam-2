@@ -282,7 +282,7 @@ const BookingForm = ({ venueId, onUpdate, booking, errorMessage }) => {
 
   return (
     <Form onSubmit={handleFormSubmit}>
-      <div className='form-date'>
+      <div className='form-date mb-1'>
         <FormGroup>
           <Label htmlFor='start-date'>Start Date</Label>
           <DatePicker
@@ -325,8 +325,8 @@ const BookingForm = ({ venueId, onUpdate, booking, errorMessage }) => {
         </FormGroup>
       </div>
       <FormGroup>
-        <Button className='btn' type='submit'>
-          {onUpdate ? 'Update' : 'Book Now'}
+        <Button className='btn mb-1' type='submit'>
+          {onUpdate ? 'Update Booking' : 'Book Now'}
         </Button>
       </FormGroup>
       <FormGroup>
