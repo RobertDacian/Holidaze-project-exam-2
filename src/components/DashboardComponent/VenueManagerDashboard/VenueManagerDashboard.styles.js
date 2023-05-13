@@ -21,6 +21,7 @@ export const Tabs = styled.div`
     grid-column-end: span 2;
     display: flex;
     flex-direction: column;
+    flex-wrap: wrap;
   }
 
   .tabs {
@@ -47,6 +48,9 @@ export const Tabs = styled.div`
     button:hover {
       background-color: var(--primary-color-light);
       color: white;
+    }
+    @media (max-width: 640px) {
+      flex-direction: column;
     }
   }
 

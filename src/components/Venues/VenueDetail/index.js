@@ -245,8 +245,6 @@ const VenueDetails = ({ venueId, currentUser }) => {
     }
   }, [id, venueId, setVenueDetails]);
 
-  // console.log('venue state value:', venueDetails);
-
   const renderTabContent = () => {
     const YesIcon = () => (
       <>
@@ -263,32 +261,35 @@ const VenueDetails = ({ venueId, currentUser }) => {
         return (
           <div className='tab-content'>
             <div className='info'>
-              <p className='p-bold'>
+              <span className='p-bold'>
                 Address:
-                <p className='p-gray '>{venueDetails.location.address}</p>
-              </p>
+                <span className='p-gray '>{venueDetails.location.address}</span>
+              </span>
             </div>
             <div className='info'>
-              <p className='p-bold'>
-                City: <p className='p-gray'>{venueDetails.location.city}</p>
-              </p>
+              <span className='p-bold'>
+                City:
+                <span className='p-gray'>{venueDetails.location.city}</span>
+              </span>
             </div>
             <div className='info'>
-              <p className='p-bold'>
-                ZIP: <p className='p-gray'>{venueDetails.location.zip}</p>
-              </p>
+              <span className='p-bold'>
+                ZIP: <span className='p-gray'>{venueDetails.location.zip}</span>
+              </span>
             </div>
             <div className='info'>
-              <p className='p-bold'>
+              <span className='p-bold'>
                 Country:
-                <p className='p-gray'>{venueDetails.location.country}</p>
-              </p>
+                <span className='p-gray'>{venueDetails.location.country}</span>
+              </span>
             </div>
             <div className='info'>
-              <p className='p-bold'>
+              <span className='p-bold'>
                 Continent:
-                <p className='p-gray'>{venueDetails.location.continent}</p>
-              </p>
+                <span className='p-gray'>
+                  {venueDetails.location.continent}
+                </span>
+              </span>
             </div>
           </div>
         );
@@ -298,30 +299,36 @@ const VenueDetails = ({ venueId, currentUser }) => {
         return (
           <div className='tab-content'>
             <div className='info'>
-              <p className='p-bold'>
+              <span className='p-bold'>
                 WiFi:
-                <p>{venueDetails.meta.wifi ? <YesIcon /> : <NoIcon />}</p>
-              </p>
+                <span className='p-gray'>
+                  {venueDetails.meta.wifi ? <YesIcon /> : <NoIcon />}
+                </span>
+              </span>
             </div>
             <div className='info'>
-              <p className='p-bold'>
+              <span className='p-bold'>
                 Parking:
-                <p className='p-gray'>
+                <span className='p-gray'>
                   {venueDetails.meta.parking ? <YesIcon /> : <NoIcon />}
-                </p>
-              </p>
+                </span>
+              </span>
             </div>
             <div className='info'>
-              <p className='p-bold'>
+              <span className='p-bold'>
                 Breakfast:
-                <p>{venueDetails.meta.breakfast ? <YesIcon /> : <NoIcon />}</p>
-              </p>
+                <span className='p-gray'>
+                  {venueDetails.meta.breakfast ? <YesIcon /> : <NoIcon />}
+                </span>
+              </span>
             </div>
             <div className='info'>
-              <p className='p-bold'>
+              <span className='p-bold'>
                 Pets allowed:
-                <p>{venueDetails.meta.pets ? <YesIcon /> : <NoIcon />}</p>
-              </p>
+                <span className='p-gray'>
+                  {venueDetails.meta.pets ? <YesIcon /> : <NoIcon />}
+                </span>
+              </span>
             </div>
           </div>
         );

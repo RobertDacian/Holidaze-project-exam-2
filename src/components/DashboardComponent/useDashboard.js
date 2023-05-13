@@ -54,13 +54,13 @@
 
 // src/components/DashboardComponent/UserDashboard/useUserDashboard.js
 import { useEffect } from 'react';
-import { useGlobal } from '../../../contexts/GlobalContext';
+import { useGlobal } from '../../contexts/GlobalContext';
 import {
   fetchUserBookings,
   deleteBooking,
   updateBooking,
-} from '../../../api/bookings';
-import { updateProfileMedia } from '../../../api/profiles';
+} from '../../api/bookings';
+import { updateProfileMedia } from '../../api/profiles';
 
 const useUserDashboard = () => {
   const { currentUser, setBookings } = useGlobal();

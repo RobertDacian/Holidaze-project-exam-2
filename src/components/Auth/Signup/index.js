@@ -448,13 +448,13 @@ const SignUp = () => {
             className={activeTab === 'user' ? 'active' : ''}
             onClick={() => handleClick('user')}
           >
-            I am a user
+            User
           </button>
           <button
             className={activeTab === 'venue' ? 'active' : ''}
             onClick={() => handleClick('venue')}
           >
-            I am a Venue Manager
+            Venue Manager
           </button>
         </div>
 

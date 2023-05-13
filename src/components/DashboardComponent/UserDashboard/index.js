@@ -81,7 +81,7 @@ import { useGlobal } from '../../../contexts/GlobalContext';
 import BookingCard from '../BookingCard';
 import ProfileCard from '../ProfileCard';
 import { Grid, Tabs } from './UserDashboard.styles';
-import useUserDashboard from './useUserDashboard';
+import useUserDashboard from '../useDashboard';
 
 const UserDashboard = () => {
   const { currentUser, bookings } = useGlobal();

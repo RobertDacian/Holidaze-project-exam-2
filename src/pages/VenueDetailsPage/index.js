@@ -5,8 +5,10 @@ const VenueDetail = () => {
   return (
     <div className='section'>
       <div className='container '>
-        <h1 className='title '>Venue Detail Page Content</h1>
-        <VenueDetails />
+        <div className='wrapper-center'>
+          <h1 className='title '>Venue Detail Page Content</h1>
+          <VenueDetails />
+        </div>
       </div>
     </div>
   );

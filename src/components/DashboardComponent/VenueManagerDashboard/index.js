@@ -109,7 +109,7 @@
 // In src/components/DashboardComponent/VenueManagerDashboard/index.js
 import React, { useState } from 'react';
 import { useGlobal } from '../../../contexts/GlobalContext';
-import useUserDashboard from '../UserDashboard/useUserDashboard';
+import useUserDashboard from '../useDashboard';
 import BookingCard from '../BookingCard';
 import ProfileCard from '../ProfileCard';
 import { Grid, Tabs } from './VenueManagerDashboard.styles';

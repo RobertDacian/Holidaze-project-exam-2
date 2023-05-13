@@ -116,6 +116,16 @@ export const VenueDetailsWrapper = styled.div`
     margin: 0;
   }
 
+  span,
+  .p-bold {
+    display: flex;
+    -webkit-box-pack: justify;
+    flex-direction: column;
+    /* gap: 0.4rem; */
+    justify-content: center;
+    align-items: flex-start;
+  }
+
   label {
     color: var(--primary-color);
     margin-bottom: 5px;

@@ -8,12 +8,13 @@ export const FormWrapper = styled.div`
   width: 100%;
   margin: 0 auto;
   background-color: white;
-  padding: 2rem;
-  margin: 2rem;
+  padding: 0.5rem;
+  margin: 1rem;
   box-shadow: var(--light-shadow);
 
   .tabs {
     display: flex;
+    /* flex-wrap: wrap; */
 
     button {
       background-color: transparent;

@@ -120,7 +120,7 @@
 //     <NavContainer className='container' isMenuOpen={isMenuOpen}>
 //       <div className='nav-center'>
 //         <div className='nav-header'>
-//           <NavLink to='/'>
+//           <NavLink to='/venues'>
 //             <Header />
 //           </NavLink>
 //           <button
@@ -161,7 +161,6 @@
 // };
 
 // export default Navigation;
-
 import React, { useState, useEffect, useRef } from 'react';
 import { NavLink } from 'react-router-dom';
 import { NavContainer } from './Navigation.styles';
@@ -284,7 +283,7 @@ const Navigation = () => {
     <NavContainer className='container' isMenuOpen={isMenuOpen}>
       <div className='nav-center'>
         <div className='nav-header'>
-          <NavLink to='/'>
+          <NavLink to='/venues'>
             <Header />
           </NavLink>
           <button
