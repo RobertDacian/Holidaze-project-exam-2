@@ -1,3 +1,5 @@
+// // src/components/DashboardComponent/UserDashboard/index.js
+
 // import React, { useState } from 'react';
 // import { useGlobal } from '../../../contexts/GlobalContext';
 // import BookingCard from '../BookingCard';
@@ -5,11 +7,11 @@
 // import { Grid, Tabs } from './UserDashboard.styles';
 // import useUserDashboard from './useUserDashboard';
 
-// const UserDashboard = ({ userId }) => {
-//   const { currentUser, userBookings } = useGlobal();
+// const UserDashboard = () => {
+//   const { currentUser, bookings } = useGlobal();
+//   console.log('User bookings:', bookings);
 
-//   const { handleUpdateProfileMedia, handleCancelBooking } =
-//     useUserDashboard(userId);
+//   const { handleUpdateProfileMedia, handleDeleteBooking } = useUserDashboard();
 
 //   const [activeTab, setActiveTab] = useState('bookings');
 
@@ -40,14 +42,19 @@
 //             {activeTab === 'bookings' && (
 //               <div className='tab-content'>
 //                 <Grid>
-//                   {userBookings.map((booking) => (
-//                     <BookingCard
-//                       key={booking.id}
-//                       booking={booking}
-//                       venue={booking.venue}
-//                       handleCancelBooking={handleCancelBooking}
-//                     />
-//                   ))}
+//                   {bookings &&
+//                     bookings
+//                       .filter((booking) => booking && booking.id)
+//                       .map((booking) => (
+//                         <BookingCard
+//                           key={booking.id}
+//                           booking={booking}
+//                           venueId={booking.venueId} // assuming the venueId is present on the booking
+//                           currentUser={currentUser}
+//                           handleCancelBooking={handleDeleteBooking}
+//                           token={currentUser.token}
+//                         />
+//                       ))}
 //                 </Grid>
 //               </div>
 //             )}
@@ -78,10 +85,7 @@ import useUserDashboard from './useUserDashboard';
 
 const UserDashboard = () => {
   const { currentUser, bookings } = useGlobal();
-  console.log('User bookings:', bookings);
-
   const { handleUpdateProfileMedia, handleDeleteBooking } = useUserDashboard();
-
   const [activeTab, setActiveTab] = useState('bookings');
 
   return (
@@ -118,6 +122,7 @@ const UserDashboard = () => {
                         <BookingCard
                           key={booking.id}
                           booking={booking}
+                          venueId={booking.venueId}
                           currentUser={currentUser}
                           handleCancelBooking={handleDeleteBooking}
                           token={currentUser.token}

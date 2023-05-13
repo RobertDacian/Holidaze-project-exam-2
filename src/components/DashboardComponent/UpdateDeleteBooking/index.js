@@ -6,7 +6,7 @@ import { UpdateDeleteBookingStyles } from './UpdateDeleteBookingStyles.styles';
 import BookingForm from '../../BookingForm';
 
 const UpdateDeleteBooking = ({ booking, isOpen, onClose }) => {
-  const { currentUser, updateBooking, deleteBookingById } = useGlobal();
+  const { currentUser, updateBooking, deleteBooking } = useGlobal();
   const [errorMessage, setErrorMessage] = useState('');
 
   const handleUpdateBooking = async (bookingData) => {
@@ -26,7 +26,7 @@ const UpdateDeleteBooking = ({ booking, isOpen, onClose }) => {
 
   const handleDeleteBooking = async () => {
     try {
-      await deleteBookingById(booking.id, currentUser);
+      await deleteBooking(booking.id, currentUser);
       onClose();
     } catch (error) {
       console.log('Error deleting booking:', error);

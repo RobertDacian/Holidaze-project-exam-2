@@ -353,7 +353,7 @@ const VenueDetails = ({ venueId, currentUser }) => {
             <p>Last Updated: {venueDetails.updated}</p>
 
             <BookingForm
-              venueId={venueDetails.id} // pass venueId to BookingForm
+              venueId={venueDetails.id}
               currentUser={currentUser}
               createBooking={createBooking}
             />

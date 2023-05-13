@@ -23,25 +23,28 @@
 //   });
 
 //   const [token, setToken] = useState(() => {
-//     const storedToken = localStorage.getItem('token');
+//     const storedToken = localStorage.getItem('accessToken');
 //     return storedToken || null;
 //   });
 
 //   const [venues, setVenues] = useState([]);
 //   const [venueDetails, setVenueDetails] = useState(null);
-//   const [bookings, setBookings] = useState([]);
+//   const [bookings, setBookings] = useState(() => {
+//     const storedBookings = localStorage.getItem('bookings');
+//     return storedBookings ? JSON.parse(storedBookings) : [];
+//   });
 //   const [profiles, setProfiles] = useState([]);
 
 //   useEffect(() => {
 //     if (currentUser) {
 //       localStorage.setItem('currentUser', JSON.stringify(currentUser));
 //       if (currentUser.accessToken) {
-//         localStorage.setItem('token', currentUser.accessToken);
+//         localStorage.setItem('accessToken', currentUser.accessToken);
 //         setToken(currentUser.accessToken);
 //       }
 //     } else {
 //       localStorage.removeItem('currentUser');
-//       localStorage.removeItem('token');
+//       localStorage.removeItem('accessToken');
 //       setToken(null);
 //     }
 //   }, [currentUser]);
@@ -55,8 +58,13 @@
 //       try {
 //         setCurrentUser(null);
 //         setToken(null); // Clear token state
+//         setVenues([]);
+//         setVenueDetails(null);
+//         // setBookings([]);
+//         setProfiles([]);
 //         localStorage.removeItem('currentUser');
-//         localStorage.removeItem('token');
+//         localStorage.removeItem('accessToken');
+//         // localStorage.removeItem('bookings');
 //         console.log('User logged out and local storage cleared');
 //         resolve();
 //       } catch (error) {
@@ -64,7 +72,6 @@
 //       }
 //     });
 //   };
-
 //   const fetchProfiles = async () => {
 //     try {
 //       const fetchedProfiles = await profilesAPI.fetchProfiles();
@@ -112,33 +119,16 @@
 
 //   const fetchUserBookingsFromAPI = useCallback(async () => {
 //     try {
-//       if (!currentUser) {
+//       if (!currentUser || !currentUser.name) {
 //         return;
 //       }
 
 //       const fetchedBookings = await bookingsAPI.fetchUserBookings(
-//         currentUser, // Pass the whole currentUser object
-//         currentUser.token,
-//         currentUser.venueManager
+//         currentUser,
+//         currentUser.token
 //       );
 
-//       const bookingsWithDetails = await Promise.all(
-//         fetchedBookings.map(async (booking) => {
-//           const bookingData = await bookingsAPI.fetchBookingById(
-//             booking.id,
-//             currentUser.token,
-//             { _venue: true, _customer: true }
-//           );
-//           return {
-//             ...bookingData,
-//             venueName: bookingData.venue.name,
-//             imageUrl: bookingData.venue.media[0] || '',
-//             venueManager: currentUser.venueManager ? true : undefined,
-//           };
-//         })
-//       );
-
-//       setBookings(bookingsWithDetails);
+//       setBookings(fetchedBookings);
 //     } catch (error) {
 //       console.log('Error fetching bookings:', error);
 //     }
@@ -151,26 +141,12 @@
 //   const createBooking = async (bookingData) => {
 //     try {
 //       const newBooking = await bookingsAPI.createBooking(
-//         {
-//           ...bookingData,
-//           venueId: venueDetails.id,
-//           venueManager: currentUser.venueManager, // Add this line
-//         },
+//         bookingData,
 //         currentUser.token
 //       );
-//       const venue = await bookingsAPI.fetchBookingById(
-//         newBooking.id,
-//         currentUser.token,
-//         { _venue: true, _customer: true }
-//       );
-//       const newBookingWithDetails = {
-//         ...newBooking,
-//         venueName: venue.venue.name,
-//         imageUrl: venue.venue.media[0] || '',
-//         customer: venue.customer,
-//       };
+
 //       setBookings((prevBookings) => {
-//         const updatedBookings = [...prevBookings, newBookingWithDetails];
+//         const updatedBookings = [...prevBookings, newBooking];
 //         localStorage.setItem('bookings', JSON.stringify(updatedBookings));
 //         return updatedBookings;
 //       });
@@ -179,19 +155,12 @@
 //     }
 //   };
 
-//   const updateBooking = async (
-//     bookingId,
-//     updatedBookingData,
-//     isVenueManager,
-//     userId
-//   ) => {
+//   const updateBooking = async (bookingId, updatedBookingData) => {
 //     try {
 //       const updatedBooking = await bookingsAPI.updateBooking(
 //         bookingId,
 //         updatedBookingData,
-//         currentUser.token,
-//         isVenueManager,
-//         userId
+//         currentUser.token
 //       );
 
 //       setBookings((prevBookings) => {
@@ -217,7 +186,7 @@
 //           const updatedBookings = prevBookings.filter(
 //             (booking) => booking.id !== bookingId
 //           );
-//           localStorage.setItem('bookings', JSON.stringify(updatedBookings)); // Store updated bookings in local storage
+//           localStorage.setItem('bookings', JSON.stringify(updatedBookings));
 //           return updatedBookings;
 //         });
 //       }
@@ -313,14 +282,12 @@ export const GlobalProvider = ({ children }) => {
     return new Promise((resolve, reject) => {
       try {
         setCurrentUser(null);
-        setToken(null); // Clear token state
+        setToken(null);
         setVenues([]);
         setVenueDetails(null);
-        // setBookings([]);
         setProfiles([]);
         localStorage.removeItem('currentUser');
         localStorage.removeItem('accessToken');
-        // localStorage.removeItem('bookings');
         console.log('User logged out and local storage cleared');
         resolve();
       } catch (error) {
@@ -400,54 +367,35 @@ export const GlobalProvider = ({ children }) => {
         bookingData,
         currentUser.token
       );
-
-      setBookings((prevBookings) => {
-        const updatedBookings = [...prevBookings, newBooking];
-        localStorage.setItem('bookings', JSON.stringify(updatedBookings));
-        return updatedBookings;
-      });
+      fetchUserBookingsFromAPI(); // Refresh bookings after creating
+      return newBooking;
     } catch (error) {
       console.log('Error creating booking:', error);
+      throw error;
     }
   };
 
-  const updateBooking = async (bookingId, updatedBookingData) => {
+  const updateBooking = async (bookingId, bookingData) => {
     try {
-      const updatedBooking = await bookingsAPI.updateBooking(
+      await bookingsAPI.updateBooking(
         bookingId,
-        updatedBookingData,
+        bookingData,
         currentUser.token
       );
-
-      setBookings((prevBookings) => {
-        const updatedBookings = prevBookings.map((booking) =>
-          booking.id === bookingId ? updatedBooking : booking
-        );
-        localStorage.setItem('bookings', JSON.stringify(updatedBookings));
-        return updatedBookings;
-      });
+      fetchUserBookingsFromAPI(); // Refresh bookings after updating
     } catch (error) {
       console.log('Error updating booking:', error);
+      throw error;
     }
   };
 
   const deleteBooking = async (bookingId) => {
     try {
-      const status = await bookingsAPI.deleteBooking(
-        bookingId,
-        currentUser.token
-      );
-      if (status === 204) {
-        setBookings((prevBookings) => {
-          const updatedBookings = prevBookings.filter(
-            (booking) => booking.id !== bookingId
-          );
-          localStorage.setItem('bookings', JSON.stringify(updatedBookings));
-          return updatedBookings;
-        });
-      }
+      await bookingsAPI.deleteBooking(bookingId, currentUser.token);
+      // After deleting, refresh the bookings.
+      fetchUserBookingsFromAPI();
     } catch (error) {
-      console.log('Error canceling booking:', error);
+      console.error('Error deleting booking:', error);
     }
   };
 
@@ -470,6 +418,7 @@ export const GlobalProvider = ({ children }) => {
     setProfiles,
     fetchProfiles,
     updateCurrentUserProfile,
+    fetchUserBookingsFromAPI,
     updateProfileMedia,
     updateBooking,
   };

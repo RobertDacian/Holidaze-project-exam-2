@@ -54,7 +54,13 @@ import { MdImage } from 'react-icons/md';
 import { Card } from './BookingCard.styles';
 import UpdateDeleteBooking from '../UpdateDeleteBooking';
 
-const BookingCard = ({ booking, handleCancelBooking }) => {
+const BookingCard = ({
+  booking,
+  venueId,
+  currentUser,
+  handleCancelBooking,
+  token,
+}) => {
   const [modalOpen, setModalOpen] = useState(false);
 
   if (!booking) {
@@ -73,7 +79,8 @@ const BookingCard = ({ booking, handleCancelBooking }) => {
   return (
     <>
       <Card>
-        {Array.isArray(booking?.venue?.media) &&
+        {booking.venue &&
+        Array.isArray(booking.venue.media) &&
         booking.venue.media.length > 0 ? (
           <img src={booking.venue.media[0]} alt={booking.venue.name} />
         ) : (

@@ -56,14 +56,24 @@
 //         dateFrom: startDate,
 //         dateTo: endDate,
 //         guests: parseInt(guests, 10),
-//         venueId: venueId, // Include the venueId in the bookingData
+//         venueId: venueId,
 //       };
 
 //       try {
 //         await createBooking(bookingData, onUpdate, booking ? booking.id : null);
 //         setError('bookingSuccess', 'Booking created successfully!');
+
+//         // Redirect based on currentUser's role
 //         setTimeout(() => {
-//           navigate('/user-dashboard');
+//           const currentUser = localStorage.getItem('currentUser')
+//             ? JSON.parse(localStorage.getItem('currentUser'))
+//             : null;
+
+//           if (currentUser && currentUser.venueManager) {
+//             navigate('/venue-manager-dashboard');
+//           } else {
+//             navigate('/user-dashboard');
+//           }
 //         }, 2000);
 //       } catch (error) {
 //         setError('bookingError', error.message);
@@ -161,6 +171,7 @@
 // };
 
 // export default BookingForm;
+
 // In src/components/BookingForm/index.js i have the following code:
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -178,7 +189,12 @@ const BookingForm = ({ venueId, onUpdate, booking, errorMessage }) => {
   const [guests, setGuests] = useState(1);
   const navigate = useNavigate();
   const today = new Date();
-  const { currentUser, createBooking } = useGlobal();
+  const {
+    currentUser,
+    createBooking,
+    updateBooking,
+    fetchUserBookingsFromAPI,
+  } = useGlobal();
 
   useEffect(() => {
     if (booking) {
@@ -219,14 +235,29 @@ const BookingForm = ({ venueId, onUpdate, booking, errorMessage }) => {
         dateFrom: startDate,
         dateTo: endDate,
         guests: parseInt(guests, 10),
-        venueId: venueId, // Include the venueId in the bookingData
+        venueId: venueId,
       };
 
       try {
-        await createBooking(bookingData, onUpdate, booking ? booking.id : null);
+        if (onUpdate) {
+          await updateBooking(booking.id, bookingData);
+        } else {
+          await createBooking(bookingData);
+        }
+        fetchUserBookingsFromAPI(); // Refresh bookings
         setError('bookingSuccess', 'Booking created successfully!');
+
+        // Redirect based on currentUser's role
         setTimeout(() => {
-          navigate('/user-dashboard');
+          const currentUser = localStorage.getItem('currentUser')
+            ? JSON.parse(localStorage.getItem('currentUser'))
+            : null;
+
+          if (currentUser && currentUser.venueManager) {
+            navigate('/venue-manager-dashboard');
+          } else {
+            navigate('/user-dashboard');
+          }
         }, 2000);
       } catch (error) {
         setError('bookingError', error.message);
