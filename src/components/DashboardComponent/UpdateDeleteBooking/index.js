@@ -26,7 +26,7 @@ const UpdateDeleteBooking = ({ booking, isOpen, onClose }) => {
 
   const handleDeleteBooking = async () => {
     try {
-      await deleteBooking(booking.id, currentUser);
+      await deleteBooking(booking.id); // pass only booking id
       onClose();
     } catch (error) {
       console.log('Error deleting booking:', error);

@@ -89,7 +89,7 @@ const useUserDashboard = () => {
 
   const handleDeleteBooking = async (bookingId) => {
     try {
-      await deleteBooking(bookingId, currentUser.token);
+      await deleteBooking(bookingId);
       setBookings((prevBookings) =>
         prevBookings.filter((booking) => booking.id !== bookingId)
       );
