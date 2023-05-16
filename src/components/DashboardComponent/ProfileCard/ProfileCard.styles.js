@@ -8,13 +8,12 @@ export const FormWrapper = styled.div`
   width: 100%;
   margin: 0 auto;
   background-color: white;
-  padding: 0.5rem;
-  margin: 1rem;
+  padding: 2rem;
+  margin: 2rem;
   box-shadow: var(--light-shadow);
 
   .tabs {
     display: flex;
-    /* flex-wrap: wrap; */
 
     button {
       background-color: transparent;
@@ -61,6 +60,9 @@ export const FormWrapper = styled.div`
         font-size: 14px;
         color: var(--primary-color);
         outline: none;
+        &:disabled {
+          background: var(--gray-color-light);
+        }
 
         &::placeholder {
           color: var(--primary-color-light);
@@ -95,8 +97,4 @@ export const FormWrapper = styled.div`
     margin-top: 20px;
     text-align: center;
   }
-`;
-
-export const Title = styled.h1`
-  /* Add your title styles here */
 `;

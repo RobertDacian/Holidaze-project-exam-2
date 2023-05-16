@@ -40,3 +40,7 @@ export const VenueCard = styled.div`
     color: #ffd700;
   }
 `;
+
+// export const MdImage = styled.div`
+//   background: red;
+// `;

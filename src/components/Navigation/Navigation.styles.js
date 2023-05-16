@@ -47,6 +47,7 @@ export const NavContainer = styled.nav`
     justify-content: flex-end;
     align-items: center;
     width: 100%;
+    gap: 1rem;
 
     li {
       a {
@@ -63,7 +64,7 @@ export const NavContainer = styled.nav`
 
     .nav-link {
       display: flex;
-      width: 50%;
+      /* width: 50%; */
       align-items: center;
       .active {
         color: var(--active-link);
