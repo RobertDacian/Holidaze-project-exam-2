@@ -554,15 +554,28 @@ const CreateVenue = ({ setActiveTab }) => {
             id='address'
             name='address'
             onChange={handleChange}
+            placeholder='Venue address'
           />
         </FormGroup>
         <FormGroup>
           <Label htmlFor='city'>City:</Label>
-          <Input type='text' id='city' name='city' onChange={handleChange} />
+          <Input
+            type='text'
+            id='city'
+            name='city'
+            onChange={handleChange}
+            placeholder='In what city is the venue'
+          />
         </FormGroup>
         <FormGroup>
           <Label htmlFor='zip'>ZIP:</Label>
-          <Input type='text' id='zip' name='zip' onChange={handleChange} />
+          <Input
+            type='text'
+            id='zip'
+            name='zip'
+            onChange={handleChange}
+            placeholder='The zip code'
+          />
         </FormGroup>
         <FormGroup>
           <Label htmlFor='country'>Country:</Label>
@@ -571,6 +584,7 @@ const CreateVenue = ({ setActiveTab }) => {
             id='country'
             name='country'
             onChange={handleChange}
+            placeholder='In what country is the venue'
           />
         </FormGroup>
         <FormGroup>
@@ -580,6 +594,7 @@ const CreateVenue = ({ setActiveTab }) => {
             id='continent'
             name='continent'
             onChange={handleChange}
+            placeholder='On what continent is the venue'
           />
         </FormGroup>
         {/* <FormGroup>
