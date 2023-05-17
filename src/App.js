@@ -3,15 +3,15 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Layout from './components/Layout';
 import { GlobalProvider } from './contexts/GlobalContext';
 import {
-  Home,
-  Contact,
+  // Home,
+  // Contact,
   VenuesPage,
   UserDashboardPage,
   VenueManagerDashboardPage,
   VenueDetailsPage,
   Login,
   SignUp,
-  SuccessfulBooking,
+  // SuccessfulBooking,
 } from './pages';
 
 function App() {
@@ -20,8 +20,9 @@ function App() {
       <GlobalProvider>
         <Layout>
           <Routes>
-            <Route path='/' element={<Home />} />
-            <Route path='/contact' element={<Contact />} />
+            {/* <Route path='/' element={<Home />} /> */}
+            {/* <Route path='/contact' element={<Contact />} /> */}
+            <Route path='/' element={<VenuesPage />} />
             <Route path='/venues' element={<VenuesPage />} />
             <Route path='/venues/:id' element={<VenueDetailsPage />} />
             <Route path='/user-dashboard' element={<UserDashboardPage />} />
@@ -31,8 +32,7 @@ function App() {
             />
             <Route path='/login' element={<Login />} />
             <Route path='/signup' element={<SignUp />} />
-            <Route path='/booking/success' element={<SuccessfulBooking />} />
-            {/* Add other routes as needed */}
+            {/* <Route path='/booking/success' element={<SuccessfulBooking />} /> */}
           </Routes>
         </Layout>
       </GlobalProvider>

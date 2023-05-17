@@ -240,7 +240,7 @@ const Navigation = () => {
             Profile
           </NavLink>
           <NavLink
-            to='/'
+            to='/venues'
             onClick={() => {
               handleLogout();
               setIsMobileMenuOpen(false);

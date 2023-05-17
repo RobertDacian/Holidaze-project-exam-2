@@ -8,6 +8,7 @@
 // } from 'react';
 // import * as bookingsAPI from '../api/bookings';
 // import * as profilesAPI from '../api/profiles';
+// import * as venuesAPI from '../api/venues';
 
 // // Global Context
 // const GlobalContext = createContext();
@@ -57,20 +58,74 @@
 //     return new Promise((resolve, reject) => {
 //       try {
 //         setCurrentUser(null);
-//         setToken(null); // Clear token state
-//         setVenues([]);
+//         setToken(null);
+//         // setVenues([]);
 //         setVenueDetails(null);
-//         // setBookings([]);
 //         setProfiles([]);
 //         localStorage.removeItem('currentUser');
 //         localStorage.removeItem('accessToken');
-//         // localStorage.removeItem('bookings');
 //         console.log('User logged out and local storage cleared');
 //         resolve();
 //       } catch (error) {
 //         reject(error);
 //       }
 //     });
+//   };
+
+//   const fetchUserVenuesFromAPI = useCallback(async () => {
+//     try {
+//       if (!currentUser || !currentUser.name) {
+//         return;
+//       }
+
+//       const fetchedVenues = await venuesAPI.fetchVenuesByProfile(
+//         currentUser,
+//         currentUser.token
+//       );
+
+//       setVenues(fetchedVenues);
+//     } catch (error) {
+//       console.log('Error fetching venues:', error);
+//     }
+//   }, [currentUser]);
+
+//   useEffect(() => {
+//     fetchUserVenuesFromAPI();
+//   }, [fetchUserVenuesFromAPI]);
+
+//   const createVenue = async (venueData) => {
+//     try {
+//       const newVenue = await venuesAPI.createVenue(
+//         venueData,
+//         currentUser.token
+//       );
+
+//       // setVenues((prevVenues) => [...prevVenues, newVenue]);
+//       fetchUserVenuesFromAPI();
+//       return newVenue;
+//     } catch (error) {
+//       console.log('Error creating venue:', error);
+//       throw error;
+//     }
+//   };
+
+//   const updateVenue = async (venueId, venueData) => {
+//     try {
+//       await venuesAPI.updateVenue(venueId, venueData, currentUser.token);
+//       fetchUserVenuesFromAPI(); // Refresh venues after updating
+//     } catch (error) {
+//       console.log('Error updating venue:', error);
+//       throw error;
+//     }
+//   };
+
+//   const deleteVenue = async (venueId) => {
+//     try {
+//       await venuesAPI.deleteVenue(venueId, currentUser.token);
+//       fetchUserVenuesFromAPI(); // Refresh venues after deleting
+//     } catch (error) {
+//       console.error('Error deleting venue:', error);
+//     }
 //   };
 //   const fetchProfiles = async () => {
 //     try {
@@ -144,54 +199,35 @@
 //         bookingData,
 //         currentUser.token
 //       );
-
-//       setBookings((prevBookings) => {
-//         const updatedBookings = [...prevBookings, newBooking];
-//         localStorage.setItem('bookings', JSON.stringify(updatedBookings));
-//         return updatedBookings;
-//       });
+//       fetchUserBookingsFromAPI(); // Refresh bookings after creating
+//       return newBooking;
 //     } catch (error) {
 //       console.log('Error creating booking:', error);
+//       throw error;
 //     }
 //   };
 
-//   const updateBooking = async (bookingId, updatedBookingData) => {
+//   const updateBooking = async (bookingId, bookingData) => {
 //     try {
-//       const updatedBooking = await bookingsAPI.updateBooking(
+//       await bookingsAPI.updateBooking(
 //         bookingId,
-//         updatedBookingData,
+//         bookingData,
 //         currentUser.token
 //       );
-
-//       setBookings((prevBookings) => {
-//         const updatedBookings = prevBookings.map((booking) =>
-//           booking.id === bookingId ? updatedBooking : booking
-//         );
-//         localStorage.setItem('bookings', JSON.stringify(updatedBookings));
-//         return updatedBookings;
-//       });
+//       fetchUserBookingsFromAPI(); // Refresh bookings after updating
 //     } catch (error) {
 //       console.log('Error updating booking:', error);
+//       throw error;
 //     }
 //   };
 
 //   const deleteBooking = async (bookingId) => {
 //     try {
-//       const status = await bookingsAPI.deleteBooking(
-//         bookingId,
-//         currentUser.token
-//       );
-//       if (status === 204) {
-//         setBookings((prevBookings) => {
-//           const updatedBookings = prevBookings.filter(
-//             (booking) => booking.id !== bookingId
-//           );
-//           localStorage.setItem('bookings', JSON.stringify(updatedBookings));
-//           return updatedBookings;
-//         });
-//       }
+//       await bookingsAPI.deleteBooking(bookingId, currentUser.token);
+//       // After deleting, refresh the bookings.
+//       fetchUserBookingsFromAPI();
 //     } catch (error) {
-//       console.log('Error canceling booking:', error);
+//       console.error('Error deleting booking:', error);
 //     }
 //   };
 
@@ -205,15 +241,19 @@
 //     setVenues,
 //     venueDetails,
 //     setVenueDetails,
+//     createVenue,
+//     deleteVenue,
+//     fetchUserVenuesFromAPI,
+//     updateVenue,
 //     bookings,
 //     setBookings,
-//     // createBookingForCurrentUser,
 //     createBooking,
 //     deleteBooking,
 //     profiles,
 //     setProfiles,
 //     fetchProfiles,
 //     updateCurrentUserProfile,
+//     fetchUserBookingsFromAPI,
 //     updateProfileMedia,
 //     updateBooking,
 //   };
@@ -233,8 +273,8 @@ import React, {
 } from 'react';
 import * as bookingsAPI from '../api/bookings';
 import * as profilesAPI from '../api/profiles';
+import * as venuesAPI from '../api/venues';
 
-// Global Context
 const GlobalContext = createContext();
 
 export const useGlobal = () => {
@@ -244,20 +284,38 @@ export const useGlobal = () => {
 export const GlobalProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(() => {
     const storedUser = localStorage.getItem('currentUser');
-    return storedUser ? JSON.parse(storedUser) : null;
+    if (storedUser && storedUser !== 'undefined') {
+      return JSON.parse(storedUser);
+    }
+    return null;
   });
 
   const [token, setToken] = useState(() => {
     const storedToken = localStorage.getItem('accessToken');
-    return storedToken || null;
+    if (storedToken && storedToken !== 'undefined') {
+      return storedToken;
+    }
+    return null;
   });
 
-  const [venues, setVenues] = useState([]);
+  const [venues, setVenues] = useState(() => {
+    const storedVenues = localStorage.getItem('venues');
+    if (storedVenues && storedVenues !== 'undefined') {
+      return JSON.parse(storedVenues);
+    }
+    return [];
+  });
+
   const [venueDetails, setVenueDetails] = useState(null);
+
   const [bookings, setBookings] = useState(() => {
     const storedBookings = localStorage.getItem('bookings');
-    return storedBookings ? JSON.parse(storedBookings) : [];
+    if (storedBookings && storedBookings !== 'undefined') {
+      return JSON.parse(storedBookings);
+    }
+    return [];
   });
+
   const [profiles, setProfiles] = useState([]);
 
   useEffect(() => {
@@ -278,12 +336,15 @@ export const GlobalProvider = ({ children }) => {
     localStorage.setItem('bookings', JSON.stringify(bookings));
   }, [bookings]);
 
+  useEffect(() => {
+    localStorage.setItem('venues', JSON.stringify(venues));
+  }, [venues]);
+
   const logout = () => {
     return new Promise((resolve, reject) => {
       try {
         setCurrentUser(null);
         setToken(null);
-        setVenues([]);
         setVenueDetails(null);
         setProfiles([]);
         localStorage.removeItem('currentUser');
@@ -295,6 +356,75 @@ export const GlobalProvider = ({ children }) => {
       }
     });
   };
+
+  const fetchUserVenuesFromAPI = useCallback(async () => {
+    try {
+      if (!currentUser || !currentUser.name) {
+        return;
+      }
+
+      const fetchedVenues = await venuesAPI.fetchVenuesByProfile(
+        currentUser,
+        currentUser.token
+      );
+
+      setVenues(fetchedVenues);
+    } catch (error) {
+      console.log('Error fetching venues:', error);
+    }
+  }, [currentUser]);
+
+  useEffect(() => {
+    fetchUserVenuesFromAPI();
+  }, [fetchUserVenuesFromAPI]);
+
+  // const createVenue = async (venueData) => {
+  //   try {
+  //     const newVenue = await venuesAPI.createVenue(
+  //       venueData,
+  //       currentUser.token
+  //     );
+
+  //     // setVenues((prevVenues) => [...prevVenues, newVenue]);
+  //     fetchUserVenuesFromAPI();
+  //     return newVenue;
+  //   } catch (error) {
+  //     console.log('Error creating venue:', error);
+  //     throw error;
+  //   }
+  // };
+  const createVenue = async (name, venueData, token, venueManager) => {
+    try {
+      const newVenue = await venuesAPI.createVenue(venueData, token);
+
+      // setVenues((prevVenues) => [...prevVenues, newVenue]);
+      fetchUserVenuesFromAPI();
+      return newVenue;
+    } catch (error) {
+      console.log('Error creating venue:', error);
+      throw error;
+    }
+  };
+
+  const updateVenue = async (venueId, venueData) => {
+    try {
+      await venuesAPI.updateVenue(venueId, venueData, currentUser.token);
+      fetchUserVenuesFromAPI(); // Refresh venues after updating
+    } catch (error) {
+      console.log('Error updating venue:', error);
+      throw error;
+    }
+  };
+
+  const deleteVenue = async (venueId) => {
+    try {
+      await venuesAPI.deleteVenue(venueId, currentUser.token);
+      fetchUserVenuesFromAPI(); // Refresh venues after deleting
+    } catch (error) {
+      console.error('Error deleting venue:', error);
+    }
+  };
+
   const fetchProfiles = async () => {
     try {
       const fetchedProfiles = await profilesAPI.fetchProfiles();
@@ -409,9 +539,12 @@ export const GlobalProvider = ({ children }) => {
     setVenues,
     venueDetails,
     setVenueDetails,
+    createVenue,
+    deleteVenue,
+    fetchUserVenuesFromAPI,
+    updateVenue,
     bookings,
     setBookings,
-    // createBookingForCurrentUser,
     createBooking,
     deleteBooking,
     profiles,

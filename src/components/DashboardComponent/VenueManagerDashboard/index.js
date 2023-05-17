@@ -1,47 +1,22 @@
 // // In src/components/DashboardComponent/VenueManagerDashboard/index.js
 // import React, { useState, useEffect } from 'react';
 // import { useGlobal } from '../../../contexts/GlobalContext';
+// import useUserDashboard from '../useDashboard';
 // import BookingCard from '../BookingCard';
 // import ProfileCard from '../ProfileCard';
+// import VenueCard from '../VenueCard';
+// import CreateVenue from '../CreateVenue'; // Import the CreateVenue component
 // import { Grid, Tabs } from './VenueManagerDashboard.styles';
-// import { deleteBooking } from '../../../api/bookings';
-// import { updateProfileMedia } from '../../../api/profiles';
-// // import BookingForm from '../../BookingForm';
 
-// const VenueManagerDashboard = ({ venueId }) => {
-//   const { currentUser, fetchBookings, venueManagerBookings } = useGlobal();
-
-//   const handleUpdateProfileMedia = async (mediaType, mediaUrl) => {
-//     try {
-//       await updateProfileMedia(
-//         currentUser.name,
-//         mediaType,
-//         mediaUrl,
-//         currentUser.token
-//       );
-//     } catch (error) {
-//       console.error('Error while updating profile media:', error);
-//     }
-//   };
+// const VenueManagerDashboard = () => {
+//   const { currentUser, bookings, venues } = useGlobal(); // Extract venues from the Global context
+//   const { handleUpdateProfileMedia, handleDeleteBooking } = useUserDashboard();
 
 //   const [activeTab, setActiveTab] = useState('bookings');
-//   const isVenueManager = currentUser && currentUser.role === 'venue_manager';
 
 //   useEffect(() => {
-//     if (currentUser && currentUser.id && isVenueManager) {
-//       fetchBookings(currentUser.id, true);
-//     }
-//   }, [currentUser, fetchBookings, isVenueManager]);
-
-//   const handleCancelBooking = async (bookingId) => {
-//     try {
-//       await deleteBooking(bookingId, currentUser.token);
-//       fetchBookings(currentUser.id, true);
-//     } catch (error) {
-//       console.error('Error while canceling booking:', error);
-//     }
-//   };
-
+//     console.log('Venues:', venues); // debug log to check the venues
+//   }, [venues]);
 //   return (
 //     <div className='section'>
 //       <div className='container'>
@@ -70,19 +45,26 @@
 //                 >
 //                   Create Venue
 //                 </button>
+//                 <button
+//                   className={activeTab === 'venues' ? 'active' : ''}
+//                   onClick={() => setActiveTab('venues')}
+//                 >
+//                   Your Venues
+//                 </button>
 //               </div>
 //             </div>
-//             {activeTab === 'bookings' && venueManagerBookings && (
-//               <div className='tab-content'>
+//             {activeTab === 'bookings' && bookings && (
+//               <div className='tab-content '>
 //                 <Grid>
-//                   {venueManagerBookings
+//                   {bookings
 //                     .filter((booking) => booking && booking.id)
 //                     .map((booking) => (
 //                       <BookingCard
 //                         key={booking.id}
+//                         venueId={booking.venueId}
 //                         booking={booking}
 //                         currentUser={currentUser}
-//                         handleCancelBooking={handleCancelBooking}
+//                         handleCancelBooking={handleDeleteBooking}
 //                         token={currentUser.token}
 //                       />
 //                     ))}
@@ -97,7 +79,22 @@
 //                 />
 //               </div>
 //             )}
-//             {activeTab === 'create' && <div className='tab-content'></div>}
+//             {activeTab === 'create' && (
+//               <div className='tab-content'>
+//                 <CreateVenue />
+//               </div>
+//             )}
+//             {activeTab === 'venues' && venues && (
+//               <div className='tab-content '>
+//                 <Grid>
+//                   {venues
+//                     .filter((venue) => venue && venue.id)
+//                     .map((venue) => (
+//                       <VenueCard key={venue.id} venue={venue} />
+//                     ))}
+//                 </Grid>
+//               </div>
+//             )}
 //           </Tabs>
 //         </div>
 //       </div>
@@ -106,19 +103,24 @@
 // };
 
 // export default VenueManagerDashboard;
-// In src/components/DashboardComponent/VenueManagerDashboard/index.js
+
+// src/components/DashboardComponent/VenueManagerDashboard/index.js
+
 import React, { useState } from 'react';
 import { useGlobal } from '../../../contexts/GlobalContext';
 import useUserDashboard from '../useDashboard';
+import useVenueManagerDashboard from '../useVenueManagerDashboard';
 import BookingCard from '../BookingCard';
 import ProfileCard from '../ProfileCard';
+import VenueCard from '../VenueCard';
+import CreateVenue from '../CreateVenue';
 import { Grid, Tabs } from './VenueManagerDashboard.styles';
 
 const VenueManagerDashboard = () => {
-  const { currentUser, bookings } = useGlobal();
+  const { currentUser, bookings, venues } = useGlobal();
   const { handleUpdateProfileMedia, handleDeleteBooking } = useUserDashboard();
-
-  const [activeTab, setActiveTab] = useState('bookings');
+  const { updateVenue, deleteVenue } = useVenueManagerDashboard();
+  const [activeTab, setActiveTab] = useState('venues');
 
   return (
     <div className='section'>
@@ -148,6 +150,12 @@ const VenueManagerDashboard = () => {
                 >
                   Create Venue
                 </button>
+                <button
+                  className={activeTab === 'venues' ? 'active' : ''}
+                  onClick={() => setActiveTab('venues')}
+                >
+                  Your Venues
+                </button>
               </div>
             </div>
             {activeTab === 'bookings' && bookings && (
@@ -176,7 +184,27 @@ const VenueManagerDashboard = () => {
                 />
               </div>
             )}
-            {activeTab === 'create' && <div className='tab-content'></div>}
+            {activeTab === 'create' && (
+              <div className='tab-content'>
+                <CreateVenue setActiveTab={setActiveTab} />
+              </div>
+            )}
+            {activeTab === 'venues' && venues && (
+              <div className='tab-content '>
+                <Grid>
+                  {venues
+                    .filter((venue) => venue && venue.id)
+                    .map((venue) => (
+                      <VenueCard
+                        key={venue.id}
+                        venue={venue}
+                        deleteVenue={deleteVenue}
+                        updateVenue={updateVenue}
+                      />
+                    ))}
+                </Grid>
+              </div>
+            )}
           </Tabs>
         </div>
       </div>
