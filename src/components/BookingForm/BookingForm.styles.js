@@ -58,3 +58,8 @@ export const Button = styled.button`
   border-radius: none !important;
   width: 100%;
 `;
+
+export const Select = styled.button`
+  border-radius: none !important;
+  width: 100%;
+`;

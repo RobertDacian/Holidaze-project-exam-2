@@ -28,7 +28,7 @@ export const Tabs = styled.div`
     flex-wrap: wrap;
     justify-content: space-between;
     margin-top: 1rem;
-    gap: 2rem;
+    gap: 1rem;
     button {
       flex-grow: 1;
       text-align: center;
