@@ -1,22 +1,21 @@
-// // In src/components/DashboardComponent/VenueManagerDashboard/index.js
-// import React, { useState, useEffect } from 'react';
+// // src/components/DashboardComponent/VenueManagerDashboard/index.js
+
+// import React, { useState } from 'react';
 // import { useGlobal } from '../../../contexts/GlobalContext';
 // import useUserDashboard from '../useDashboard';
+// import useVenueManagerDashboard from '../useVenueManagerDashboard';
 // import BookingCard from '../BookingCard';
 // import ProfileCard from '../ProfileCard';
 // import VenueCard from '../VenueCard';
-// import CreateVenue from '../CreateVenue'; // Import the CreateVenue component
+// import CreateVenue from '../CreateVenue';
 // import { Grid, Tabs } from './VenueManagerDashboard.styles';
 
 // const VenueManagerDashboard = () => {
-//   const { currentUser, bookings, venues } = useGlobal(); // Extract venues from the Global context
+//   const { currentUser, bookings, venues } = useGlobal();
 //   const { handleUpdateProfileMedia, handleDeleteBooking } = useUserDashboard();
+//   const { updateVenue, deleteVenue } = useVenueManagerDashboard();
+//   const [activeTab, setActiveTab] = useState('venues');
 
-//   const [activeTab, setActiveTab] = useState('bookings');
-
-//   useEffect(() => {
-//     console.log('Venues:', venues); // debug log to check the venues
-//   }, [venues]);
 //   return (
 //     <div className='section'>
 //       <div className='container'>
@@ -81,7 +80,7 @@
 //             )}
 //             {activeTab === 'create' && (
 //               <div className='tab-content'>
-//                 <CreateVenue />
+//                 <CreateVenue setActiveTab={setActiveTab} />
 //               </div>
 //             )}
 //             {activeTab === 'venues' && venues && (
@@ -90,7 +89,12 @@
 //                   {venues
 //                     .filter((venue) => venue && venue.id)
 //                     .map((venue) => (
-//                       <VenueCard key={venue.id} venue={venue} />
+//                       <VenueCard
+//                         key={venue.id}
+//                         venue={venue}
+//                         deleteVenue={deleteVenue}
+//                         updateVenue={updateVenue}
+//                       />
 //                     ))}
 //                 </Grid>
 //               </div>
@@ -120,7 +124,7 @@ const VenueManagerDashboard = () => {
   const { currentUser, bookings, venues } = useGlobal();
   const { handleUpdateProfileMedia, handleDeleteBooking } = useUserDashboard();
   const { updateVenue, deleteVenue } = useVenueManagerDashboard();
-  const [activeTab, setActiveTab] = useState('venues');
+  const [activeTab, setActiveTab] = useState('bookings');
 
   return (
     <div className='section'>

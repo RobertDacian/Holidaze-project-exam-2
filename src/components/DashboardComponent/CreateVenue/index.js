@@ -76,6 +76,7 @@
 
 //   const handleVenueUrlChange = (e) => {
 //     setVenueUrl(e.target.value);
+//     clearError();
 //   };
 
 //   const handleSubmit = async (e) => {
@@ -102,9 +103,12 @@
 
 //       // Only navigate to new venue page if the venue was successfully created.
 //       if (venueId) {
-//         setError('venueSuccess', 'Venue created successfully!');
+//         setError(
+//           'venueSuccess',
+//           'Venue created successfully, navigate to Your Venues tab to see your venue!'
+//         );
 //         setTimeout(() => {
-//           navigate(`/venue-manager-dashboard/your-venues/${venueId}`);
+//           navigate(`/venue-manager-dashboard`);
 //         }, 2000);
 //       } else {
 //         throw new Error('Venue was not created successfully');
@@ -278,7 +282,7 @@ import useFormErrors from '../../common/Errors';
 import { Error } from '../../common/Errors/Error.styles';
 import { useGlobal } from '../../../contexts/GlobalContext';
 
-const CreateVenue = () => {
+const CreateVenue = ({ setActiveTab }) => {
   const navigate = useNavigate();
   const { currentUser, createVenue } = useGlobal();
   const [venueUrl, setVenueUrl] = useState('');
@@ -371,10 +375,11 @@ const CreateVenue = () => {
       if (venueId) {
         setError(
           'venueSuccess',
-          'Venue created successfully, navigate to Your Venues tab to see your venue!'
+          'Venue created successfully, you will be redirected to Your Venues tab...'
         );
         setTimeout(() => {
           navigate(`/venue-manager-dashboard`);
+          setActiveTab('venues'); // Add this line to switch to the 'venues' tab
         }, 2000);
       } else {
         throw new Error('Venue was not created successfully');
