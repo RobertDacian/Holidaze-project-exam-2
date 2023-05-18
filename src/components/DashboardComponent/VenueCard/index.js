@@ -1,14 +1,25 @@
 // // src/components/DashboardComponent/VenueCard/index.js
-// import React from 'react';
+// import React, { useState } from 'react';
 // import PropTypes from 'prop-types';
 // import { MdImage } from 'react-icons/md';
 // import { Card } from '../BookingCard/BookingCard.styles';
+// import UpdateDeleteVenue from '../UpdateDeleteVenue';
 
-// const VenueCard = ({ venue }) => {
+// const VenueCard = ({ venue, updateVenue, deleteVenue }) => {
+//   const [modalOpen, setModalOpen] = useState(false);
+
 //   if (!venue) {
 //     console.warn('Venue is undefined:', venue);
 //     return null;
 //   }
+
+//   const handleModalOpen = () => {
+//     setModalOpen(true);
+//   };
+
+//   const handleModalClose = () => {
+//     setModalOpen(false);
+//   };
 
 //   return (
 //     <Card>
@@ -18,11 +29,22 @@
 //         <MdImage size={200} color={'var(--primary-color)'} />
 //       )}
 //       <div className='mb-2 mt-2'>
-//         <h5>{venue.name}</h5>
-//         <p>{venue.description}</p>
+//         <h5>Venue ID: {venue.id}</h5>
+//         <p>Name: {venue.name}</p>
+//         <p>Description: {venue.description}</p>
 //         <p>Price: {venue.price}</p>
 //         <p>Max Guests: {venue.maxGuests}</p>
 //         <p>Rating: {venue.rating}</p>
+//         <button className='btn' onClick={handleModalOpen}>
+//           Update Venue
+//         </button>
+//         <UpdateDeleteVenue
+//           venue={venue}
+//           isOpen={modalOpen}
+//           onClose={handleModalClose}
+//           handleUpdateVenue={updateVenue} // renamed the props here
+//           handleDeleteVenue={deleteVenue} // renamed the props here
+//         />
 //       </div>
 //     </Card>
 //   );
@@ -30,6 +52,8 @@
 
 // VenueCard.propTypes = {
 //   venue: PropTypes.object.isRequired,
+//   updateVenue: PropTypes.func.isRequired, // renamed the props here
+//   deleteVenue: PropTypes.func.isRequired, // renamed the props here
 // };
 
 // export default VenueCard;
@@ -39,25 +63,23 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { MdImage } from 'react-icons/md';
 import { Card } from '../BookingCard/BookingCard.styles';
+import UpdateDeleteVenue from '../UpdateDeleteVenue';
+import { formatDate } from '../../../utils/dateFormatUtils';
 
 const VenueCard = ({ venue, updateVenue, deleteVenue }) => {
-  const [updatedVenue, setUpdatedVenue] = useState(venue);
+  const [modalOpen, setModalOpen] = useState(false);
 
   if (!venue) {
     console.warn('Venue is undefined:', venue);
     return null;
   }
 
-  const handleUpdate = () => {
-    updateVenue(venue.id, updatedVenue);
+  const handleModalOpen = () => {
+    setModalOpen(true);
   };
 
-  const handleDelete = () => {
-    deleteVenue(venue.id);
-  };
-
-  const handleChange = (e) => {
-    setUpdatedVenue({ ...updatedVenue, [e.target.name]: e.target.value });
+  const handleModalClose = () => {
+    setModalOpen(false);
   };
 
   return (
@@ -68,37 +90,35 @@ const VenueCard = ({ venue, updateVenue, deleteVenue }) => {
         <MdImage size={200} color={'var(--primary-color)'} />
       )}
       <div className='mb-2 mt-2'>
-        <input
-          name='name'
-          type='text'
-          value={updatedVenue.name}
-          onChange={handleChange}
+        <h5>Venue ID: {venue.id}</h5>
+        <p>Name: {venue.name}</p>
+        <p>Description: {venue.description}</p>
+        <p>Price: {venue.price}</p>
+        <p>Max Guests: {venue.maxGuests}</p>
+        <p>Rating: {venue.rating}</p>
+        <p>Wifi: {venue.meta.wifi ? 'Yes' : 'No'}</p>
+        <p>Parking: {venue.meta.parking ? 'Yes' : 'No'}</p>
+        <p>Breakfast: {venue.meta.breakfast ? 'Yes' : 'No'}</p>
+        <p>Pets: {venue.meta.pets ? 'Yes' : 'No'}</p>
+        <p>Address: {venue.location.address}</p>
+        <p>City: {venue.location.city}</p>
+        <p>ZIP: {venue.location.zip}</p>
+        <p>Country: {venue.location.country}</p>
+        <p>Continent: {venue.location.continent}</p>
+        <p>Lat: {venue.location.lat}</p>
+        <p>Lng: {venue.location.lng}</p>
+        <p>Created: {formatDate(venue.created)}</p>
+        <p>Updated: {formatDate(venue.updated)}</p>
+        <button className='btn' onClick={handleModalOpen}>
+          Update Venue
+        </button>
+        <UpdateDeleteVenue
+          venue={venue}
+          isOpen={modalOpen}
+          onClose={handleModalClose}
+          handleUpdateVenue={updateVenue}
+          handleDeleteVenue={deleteVenue}
         />
-        <textarea
-          name='description'
-          value={updatedVenue.description}
-          onChange={handleChange}
-        />
-        <input
-          name='price'
-          type='text'
-          value={updatedVenue.price}
-          onChange={handleChange}
-        />
-        <input
-          name='maxGuests'
-          type='text'
-          value={updatedVenue.maxGuests}
-          onChange={handleChange}
-        />
-        <input
-          name='rating'
-          type='text'
-          value={updatedVenue.rating}
-          onChange={handleChange}
-        />
-        <button onClick={handleUpdate}>Update Venue</button>
-        <button onClick={handleDelete}>Delete Venue</button>
       </div>
     </Card>
   );
@@ -106,8 +126,8 @@ const VenueCard = ({ venue, updateVenue, deleteVenue }) => {
 
 VenueCard.propTypes = {
   venue: PropTypes.object.isRequired,
-  // updateVenue: PropTypes.func.isRequired,
-  // deleteVenue: PropTypes.func.isRequired,
+  updateVenue: PropTypes.func.isRequired,
+  deleteVenue: PropTypes.func.isRequired,
 };
 
 export default VenueCard;
