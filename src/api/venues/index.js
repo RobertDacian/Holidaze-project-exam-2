@@ -305,6 +305,24 @@ export const updateVenue = async (venueId, updatedVenueData, token) => {
   }
 };
 
+// export const updateVenue = async (venueId, venueData, mediaData, token) => {
+//   const response = await fetch(`/api/venues/${venueId}`, {
+//     method: 'PUT',
+//     headers: {
+//       'Content-Type': 'application/json',
+//       Authorization: `Bearer ${token}`,
+//     },
+//     body: JSON.stringify({ ...venueData, media: mediaData }),
+//   });
+
+//   if (!response.ok) {
+//     throw new Error('Error updating venue');
+//   }
+
+//   const data = await response.json();
+//   return data;
+// };
+
 export const deleteVenue = async (venueId, token) => {
   const url = `${API_BASE_URL}/holidaze/venues/${venueId}`;
   const requestOptions = {
