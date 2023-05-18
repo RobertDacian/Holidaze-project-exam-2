@@ -1,9 +1,12 @@
 // // src/components/DashboardComponent/UserDashboard/useUserDashboard.js
-
 // import { useEffect } from 'react';
-// import { useGlobal } from '../../../contexts/GlobalContext';
-// import { fetchUserBookings, deleteBooking } from '../../../api/bookings';
-// import { updateProfileMedia } from '../../../api/profiles';
+// import { useGlobal } from '../../contexts/GlobalContext';
+// import {
+//   fetchUserBookings,
+//   deleteBooking,
+//   updateBooking,
+// } from '../../api/bookings';
+// import { updateProfileMedia } from '../../api/profiles';
 
 // const useUserDashboard = () => {
 //   const { currentUser, setBookings } = useGlobal();
@@ -35,7 +38,7 @@
 
 //   const handleDeleteBooking = async (bookingId) => {
 //     try {
-//       await deleteBooking(bookingId);
+//       await deleteBooking(bookingId, currentUser.token);
 //       setBookings((prevBookings) =>
 //         prevBookings.filter((booking) => booking.id !== bookingId)
 //       );
@@ -44,14 +47,28 @@
 //     }
 //   };
 
+//   const handleUpdateBooking = async (bookingId, bookingData) => {
+//     try {
+//       const isVenueManager = currentUser.userType === 'venue_manager';
+//       await updateBooking(
+//         bookingId,
+//         bookingData,
+//         isVenueManager,
+//         currentUser._id
+//       );
+//     } catch (error) {
+//       console.error('Error updating booking:', error);
+//     }
+//   };
+
 //   return {
 //     handleUpdateProfileMedia,
 //     handleDeleteBooking,
+//     handleUpdateBooking,
 //   };
 // };
 
 // export default useUserDashboard;
-
 // src/components/DashboardComponent/UserDashboard/useUserDashboard.js
 import { useEffect } from 'react';
 import { useGlobal } from '../../contexts/GlobalContext';
