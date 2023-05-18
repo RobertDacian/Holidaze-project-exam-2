@@ -8,13 +8,16 @@ export const FormWrapper = styled.div`
   width: 100%;
   margin: 0 auto;
   background-color: white;
-  padding: 0.5rem;
-  margin: 1rem;
+  padding: 2rem;
+  margin: 2rem;
   box-shadow: var(--light-shadow);
+  @media (max-width: 639px) {
+    padding: 0.5rem;
+    width: 100%;
+  }
 
   .tabs {
     display: flex;
-    /* flex-wrap: wrap; */
 
     button {
       background-color: transparent;
@@ -37,7 +40,7 @@ export const FormWrapper = styled.div`
 
   form {
     width: 100%;
-    padding: 1rem;
+    padding: 0.5rem;
 
     h4 {
       color: var(--primary-color);
@@ -57,13 +60,18 @@ export const FormWrapper = styled.div`
       input {
         padding: 10px;
         border: 1px solid var(--primary-color);
-        border-radius: 4px;
-        font-size: 14px;
+        border-radius: 0;
+        font-size: var(--small-font-size);
         color: var(--primary-color);
         outline: none;
+        width: 100%;
+        height: 40px;
+        &:disabled {
+          background: var(--gray-color-light);
+        }
 
         &::placeholder {
-          color: var(--primary-color-light);
+          color: var(--gray-color);
         }
 
         &:focus {
@@ -95,8 +103,4 @@ export const FormWrapper = styled.div`
     margin-top: 20px;
     text-align: center;
   }
-`;
-
-export const Title = styled.h1`
-  /* Add your title styles here */
 `;

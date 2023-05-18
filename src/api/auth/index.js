@@ -1,7 +1,6 @@
 import {
   API_BASE_URL,
   API_AUTH_REGISTER,
-  API_AUTH_VENUE_MANAGER_REGISTER,
   API_AUTH_LOGIN,
 } from '../../constants/constants';
 
@@ -22,15 +21,15 @@ const sendRequest = async (endpoint, method, body = null, token = null) => {
     body: body instanceof FormData ? body : body ? JSON.stringify(body) : null,
   };
 
-  console.log('Request URL:', `${API_BASE_URL}${endpoint}`);
-  console.log('Request options:', requestOptions);
+  // console.log('Request URL:', `${API_BASE_URL}${endpoint}`);
+  // console.log('Request options:', requestOptions);
 
   try {
     const response = await fetch(`${API_BASE_URL}${endpoint}`, requestOptions);
     const responseData = await response.json();
 
-    console.log('Response:', response);
-    console.log('Response data:', responseData);
+    // console.log('Response:', response);
+    // console.log('Response data:', responseData);
 
     if (!response.ok) {
       const errorMessage =
@@ -48,73 +47,50 @@ const sendRequest = async (endpoint, method, body = null, token = null) => {
 };
 
 // Register User Function
-export const registerUser = async (formData) => {
-  const email = formData.get('email');
-  const existingUserEmails = JSON.parse(
-    localStorage.getItem('existingUserEmails') || '[]'
-  );
-
-  if (existingUserEmails.includes(email)) {
-    throw new Error('A profile with this email already exists.');
-  }
-
+export const registerUser = async (data, isVenueManager) => {
+  const { name, email, password, avatar } = data;
   const body = {
-    name: formData.get('name'),
-    email: formData.get('email'),
-    password: formData.get('password'),
-    avatar: formData.get('avatar'),
+    name,
+    email,
+    password,
+    avatar,
+    venueManager: isVenueManager,
   };
 
   const response = await sendRequest(API_AUTH_REGISTER, 'POST', body);
 
-  existingUserEmails.push(email);
-  localStorage.setItem(
-    'existingUserEmails',
-    JSON.stringify(existingUserEmails)
+  const existingUserEmails = JSON.parse(
+    localStorage.getItem('existingUserEmails') || '[]'
   );
-
-  const user = {
-    ...response,
-    venueManager: false,
-  };
-  return user;
-};
-
-// Register VenueManagerFunction
-export const registerVenueManager = async (formData) => {
-  const email = formData.get('email');
   const existingVenueManagerEmails = JSON.parse(
     localStorage.getItem('existingVenueManagerEmails') || '[]'
   );
 
-  if (existingVenueManagerEmails.includes(email)) {
-    throw new Error('A profile with this email already exists.');
+  if (isVenueManager) {
+    existingVenueManagerEmails.push(response.email);
+    localStorage.setItem(
+      'existingVenueManagerEmails',
+      JSON.stringify(existingVenueManagerEmails)
+    );
+  } else {
+    existingUserEmails.push(response.email);
+    localStorage.setItem(
+      'existingUserEmails',
+      JSON.stringify(existingUserEmails)
+    );
   }
 
-  const body = {
-    name: formData.get('name'),
-    email: formData.get('email'),
-    password: formData.get('password'),
-    avatar: formData.get('avatar'),
-    venueManager: true,
+  const userData = {
+    name: response.name,
+    email: response.email,
+    avatar: response.avatar,
+    venueManager: response.venueManager,
+    token: response.accessToken,
   };
 
-  const response = await sendRequest(
-    API_AUTH_VENUE_MANAGER_REGISTER,
-    'POST',
-    body
-  );
+  localStorage.setItem('currentUser', JSON.stringify(userData));
 
-  existingVenueManagerEmails.push(email);
-  localStorage.setItem(
-    'existingVenueManagerEmails',
-    JSON.stringify(existingVenueManagerEmails)
-  );
-
-  const venueManager = {
-    ...response,
-  };
-  return venueManager;
+  return userData;
 };
 
 export const login = async (
@@ -123,22 +99,6 @@ export const login = async (
   isVenueManager,
   setCurrentUser
 ) => {
-  const existingEmailsKey = isVenueManager
-    ? 'existingVenueManagerEmails'
-    : 'existingUserEmails';
-
-  const existingEmails = JSON.parse(
-    localStorage.getItem(existingEmailsKey) || '[]'
-  );
-
-  if (!existingEmails.includes(email)) {
-    throw new Error(
-      isVenueManager
-        ? 'A venue manager profile with this email does not exist.'
-        : 'A user profile with this email does not exist.'
-    );
-  }
-
   try {
     const response = await sendRequest(API_AUTH_LOGIN, 'POST', {
       email,
@@ -154,15 +114,25 @@ export const login = async (
       accessToken,
     } = response;
 
-    if (responseEmail !== email) {
+    if (responseEmail.trim().toLowerCase() !== email.trim().toLowerCase()) {
       throw new Error('Server response does not match login credentials');
+    }
+
+    if (venueManager !== isVenueManager) {
+      return {
+        status: 'error',
+        message: `Please log in as a ${
+          isVenueManager ? 'User' : 'Venue Manager'
+        }.`,
+      };
     }
 
     const userData = { name, email, avatar, venueManager, token: accessToken };
 
     localStorage.setItem('accessToken', accessToken);
+    localStorage.setItem('currentUser', JSON.stringify(userData));
 
-    console.log('Logged in user:', userData);
+    // console.log('Logged in user:', userData);
     setCurrentUser(userData);
 
     return userData;
