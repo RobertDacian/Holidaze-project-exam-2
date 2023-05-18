@@ -408,6 +408,7 @@ export const GlobalProvider = ({ children }) => {
 
   const updateVenue = async (venueId, venueData) => {
     try {
+      console.log('Updating venue with data:', venueData);
       await venuesAPI.updateVenue(venueId, venueData, currentUser.token);
       fetchUserVenuesFromAPI(); // Refresh venues after updating
     } catch (error) {

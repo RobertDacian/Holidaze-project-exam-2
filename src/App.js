@@ -3,15 +3,12 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Layout from './components/Layout';
 import { GlobalProvider } from './contexts/GlobalContext';
 import {
-  // Home,
-  // Contact,
   VenuesPage,
   UserDashboardPage,
   VenueManagerDashboardPage,
   VenueDetailsPage,
   Login,
   SignUp,
-  // SuccessfulBooking,
 } from './pages';
 
 function App() {
