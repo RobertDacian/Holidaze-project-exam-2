@@ -139,14 +139,12 @@ const CreateVenue = ({
 
       const newVenue = {
         ...venue,
-        media: [venueUrl],
+        media: venueUrl ? [venueUrl] : [],
         price: Number(venue.price),
         maxGuests: Number(venue.maxGuests),
         rating: Number(venue.rating),
         meta: venue.meta,
       };
-
-      console.log(newVenue);
 
       if (isUpdate) {
         onUpdate(newVenue);
