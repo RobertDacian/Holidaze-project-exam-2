@@ -1,4 +1,3 @@
-// src/components/common/CheckboxDropdown/index.js
 import React, { useState, useEffect, useRef } from 'react';
 import {
   CheckboxDropdownContainer,
@@ -20,7 +19,6 @@ const CheckboxDropdown = ({ options, label, onChange }) => {
 
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
-      // Cleanup the event listener on component unmount
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);

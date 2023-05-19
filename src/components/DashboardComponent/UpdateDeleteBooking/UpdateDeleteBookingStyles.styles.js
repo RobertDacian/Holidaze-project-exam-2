@@ -22,15 +22,6 @@ export const UpdateDeleteBookingStyles = styled.div`
     width: 90%;
     outline: none;
   }
-  /* .btn-outline-green {
-    background-color: transparent !important;
-    color: var(--primary-color);
-    border: 1px solid var(--clr-green-dark);
-    &:hover {
-      background-color: var(--clr-green-dark) !important;
-      color: var(--white-color);
-    }
-  } */
 
   .btn-outline-red {
     background-color: transparent !important;

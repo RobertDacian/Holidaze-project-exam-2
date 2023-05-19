@@ -1,5 +1,3 @@
-// src/components/DashboardComponent/VenueManagerDashboard/UpdateDeleteVenue/index.js
-
 import React, { useState } from 'react';
 import { useGlobal } from '../../../contexts/GlobalContext';
 import { UpdateDeleteVenueStyles } from './UpdateDeleteVenueStyles.styles';

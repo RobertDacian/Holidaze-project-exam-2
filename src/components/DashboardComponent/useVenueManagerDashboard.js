@@ -1,4 +1,3 @@
-// src/components/DashboardComponent/VenueManagerDashboard/useVenueManagerDashboard.js
 import { useEffect } from 'react';
 import { useGlobal } from '../../contexts/GlobalContext';
 import * as venuesAPI from '../../api/venues';
@@ -15,7 +14,7 @@ const useVenueManagerDashboard = () => {
   const updateVenue = async (venueId, venueData) => {
     try {
       await venuesAPI.updateVenue(venueId, venueData, currentUser.token);
-      fetchUserVenuesFromAPI(); // Refresh venues after updating
+      fetchUserVenuesFromAPI();
     } catch (error) {
       console.log('Error updating venue:', error);
       throw error;
@@ -25,7 +24,6 @@ const useVenueManagerDashboard = () => {
   const deleteVenue = async (venueId) => {
     try {
       await venuesAPI.deleteVenue(venueId, currentUser.token);
-      // Filter out the deleted venue
       setVenues((prevVenues) =>
         prevVenues.filter((venue) => venue.id !== venueId)
       );

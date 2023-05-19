@@ -4,7 +4,6 @@ export const Form = styled.form`
   display: flex;
   flex-direction: column;
   width: 100%;
-  /* align-items: center; */
   .form-date {
     display: flex;
     @media (max-width: 639px) {
@@ -22,7 +21,6 @@ export const Form = styled.form`
 export const FormGroup = styled.div`
   display: flex;
   flex-direction: column;
-  /* margin: 0.5rem 0; */
   width: 100%;
 `;
 

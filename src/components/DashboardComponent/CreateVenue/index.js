@@ -1,4 +1,3 @@
-// src/components/DashboardComponent/CreateVenue/index.js
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -44,8 +43,6 @@ const CreateVenue = ({
       zip: '',
       country: '',
       continent: '',
-      lat: 0,
-      lng: 0,
     },
   });
 
@@ -225,7 +222,6 @@ const CreateVenue = ({
             placeholder='https://example.com/image.jpg'
             value={venueUrl}
             onChange={handleVenueUrlChange}
-            required
           />
         </FormGroup>
         <FormGroup className='numbers'>
@@ -289,7 +285,7 @@ const CreateVenue = ({
             type='text'
             id='address'
             name='address'
-            value={venue.address}
+            value={venue.location.address}
             onChange={handleChange}
             placeholder='Venue address'
           />
@@ -300,7 +296,7 @@ const CreateVenue = ({
             type='text'
             id='city'
             name='city'
-            value={venue.city}
+            value={venue.location.city}
             onChange={handleChange}
             placeholder='In what city is the venue'
           />
@@ -311,7 +307,7 @@ const CreateVenue = ({
             type='text'
             id='zip'
             name='zip'
-            value={venue.zip}
+            value={venue.location.zip}
             onChange={handleChange}
             placeholder='The zip code'
           />
@@ -322,7 +318,7 @@ const CreateVenue = ({
             type='text'
             id='country'
             name='country'
-            value={venue.country}
+            value={venue.location.country}
             onChange={handleChange}
             placeholder='In what country is the venue'
           />
@@ -333,19 +329,11 @@ const CreateVenue = ({
             type='text'
             id='continent'
             name='continent'
-            value={venue.continent}
+            value={venue.location.continent}
             onChange={handleChange}
             placeholder='On what continent is the venue'
           />
         </FormGroup>
-        {/* <FormGroup>
-          <Label htmlFor='lat'>Latitude:</Label>
-          <Input type='number' id='lat' name='lat' onChange={handleChange} />
-        </FormGroup>
-        <FormGroup>
-          <Label htmlFor='lng'>Longitude:</Label>
-          <Input type='number' id='lng' name='lng' onChange={handleChange} />
-        </FormGroup> */}
         <FormGroup>
           <Button
             className='btn'
