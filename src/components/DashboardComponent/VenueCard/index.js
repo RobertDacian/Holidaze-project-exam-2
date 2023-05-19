@@ -4,6 +4,7 @@
 // import { MdImage } from 'react-icons/md';
 // import { Card } from '../BookingCard/BookingCard.styles';
 // import UpdateDeleteVenue from '../UpdateDeleteVenue';
+// import { formatDate } from '../../../utils/dateFormatUtils';
 
 // const VenueCard = ({ venue, updateVenue, deleteVenue }) => {
 //   const [modalOpen, setModalOpen] = useState(false);
@@ -35,6 +36,19 @@
 //         <p>Price: {venue.price}</p>
 //         <p>Max Guests: {venue.maxGuests}</p>
 //         <p>Rating: {venue.rating}</p>
+//         <p>Wifi: {venue.meta.wifi ? 'Yes' : 'No'}</p>
+//         <p>Parking: {venue.meta.parking ? 'Yes' : 'No'}</p>
+//         <p>Breakfast: {venue.meta.breakfast ? 'Yes' : 'No'}</p>
+//         <p>Pets: {venue.meta.pets ? 'Yes' : 'No'}</p>
+//         <p>Address: {venue.location.address}</p>
+//         <p>City: {venue.location.city}</p>
+//         <p>ZIP: {venue.location.zip}</p>
+//         <p>Country: {venue.location.country}</p>
+//         <p>Continent: {venue.location.continent}</p>
+//         <p>Lat: {venue.location.lat}</p>
+//         <p>Lng: {venue.location.lng}</p>
+//         <p>Created: {formatDate(venue.created)}</p>
+//         <p>Updated: {formatDate(venue.updated)}</p>
 //         <button className='btn' onClick={handleModalOpen}>
 //           Update Venue
 //         </button>
@@ -42,8 +56,8 @@
 //           venue={venue}
 //           isOpen={modalOpen}
 //           onClose={handleModalClose}
-//           handleUpdateVenue={updateVenue} // renamed the props here
-//           handleDeleteVenue={deleteVenue} // renamed the props here
+//           handleUpdateVenue={updateVenue}
+//           handleDeleteVenue={deleteVenue}
 //         />
 //       </div>
 //     </Card>
@@ -52,8 +66,8 @@
 
 // VenueCard.propTypes = {
 //   venue: PropTypes.object.isRequired,
-//   updateVenue: PropTypes.func.isRequired, // renamed the props here
-//   deleteVenue: PropTypes.func.isRequired, // renamed the props here
+//   updateVenue: PropTypes.func.isRequired,
+//   deleteVenue: PropTypes.func.isRequired,
 // };
 
 // export default VenueCard;
@@ -105,8 +119,6 @@ const VenueCard = ({ venue, updateVenue, deleteVenue }) => {
         <p>ZIP: {venue.location.zip}</p>
         <p>Country: {venue.location.country}</p>
         <p>Continent: {venue.location.continent}</p>
-        <p>Lat: {venue.location.lat}</p>
-        <p>Lng: {venue.location.lng}</p>
         <p>Created: {formatDate(venue.created)}</p>
         <p>Updated: {formatDate(venue.updated)}</p>
         <button className='btn' onClick={handleModalOpen}>
