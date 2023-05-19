@@ -1,8 +1,6 @@
 import styled from 'styled-components';
 
-export const Section = styled.section`
-  /* Add your section styles here */
-`;
+export const Section = styled.section``;
 
 export const Grid = styled.div`
   display: grid;

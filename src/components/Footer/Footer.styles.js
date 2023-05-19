@@ -6,8 +6,9 @@ export const FooterContainer = styled.footer`
   align-items: center;
   height: 60px;
   background-color: var(--primary-color);
-  color: var(--paragraph-white-text);
+  color: var(--white-color);
   p {
     margin: 0;
+    color: var(--white-color);
   }
 `;

@@ -1,4 +1,3 @@
-//In src/api/profiles/index.js i have the following code:
 import {
   API_BASE_URL,
   API_PROFILES,
@@ -40,8 +39,6 @@ export const fetchProfileByName = async (name) => {
   const endpoint = API_PROFILE.replace(':name', name);
   return await sendRequest(endpoint);
 };
-
-//
 
 export const updateProfileMedia = async (
   name,

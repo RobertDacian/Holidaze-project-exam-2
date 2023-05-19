@@ -140,7 +140,6 @@ export const NavContainer = styled.nav`
     position: absolute;
     background-color: var(--primary-color);
     width: 100%;
-    /* box-shadow: rgba(0, 0, 0, 0.2) 0px 8px 16px 0px; */
     z-index: 1;
     top: 110%;
     left: 50%;

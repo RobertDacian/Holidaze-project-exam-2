@@ -17,8 +17,6 @@ function App() {
       <GlobalProvider>
         <Layout>
           <Routes>
-            {/* <Route path='/' element={<Home />} /> */}
-            {/* <Route path='/contact' element={<Contact />} /> */}
             <Route path='/' element={<VenuesPage />} />
             <Route path='/venues' element={<VenuesPage />} />
             <Route path='/venues/:id' element={<VenueDetailsPage />} />
@@ -29,7 +27,6 @@ function App() {
             />
             <Route path='/login' element={<Login />} />
             <Route path='/signup' element={<SignUp />} />
-            {/* <Route path='/booking/success' element={<SuccessfulBooking />} /> */}
           </Routes>
         </Layout>
       </GlobalProvider>

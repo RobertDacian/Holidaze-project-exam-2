@@ -14,7 +14,6 @@ export const FormWrapper = styled.div`
 
   .tabs {
     display: flex;
-    /* flex-wrap: wrap; */
 
     button {
       background-color: transparent;
@@ -97,6 +96,4 @@ export const FormWrapper = styled.div`
   }
 `;
 
-export const Title = styled.h1`
-  /* Add your title styles here */
-`;
+export const Title = styled.h1``;
