@@ -1,5 +1,3 @@
-// src/components/common/CheckboxDropdown/CheckboxDropdown.js
-
 import styled from 'styled-components';
 
 export const CheckboxDropdownContainer = styled.div`

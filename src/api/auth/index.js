@@ -21,15 +21,9 @@ const sendRequest = async (endpoint, method, body = null, token = null) => {
     body: body instanceof FormData ? body : body ? JSON.stringify(body) : null,
   };
 
-  // console.log('Request URL:', `${API_BASE_URL}${endpoint}`);
-  // console.log('Request options:', requestOptions);
-
   try {
     const response = await fetch(`${API_BASE_URL}${endpoint}`, requestOptions);
     const responseData = await response.json();
-
-    // console.log('Response:', response);
-    // console.log('Response data:', responseData);
 
     if (!response.ok) {
       const errorMessage =
@@ -132,7 +126,6 @@ export const login = async (
     localStorage.setItem('accessToken', accessToken);
     localStorage.setItem('currentUser', JSON.stringify(userData));
 
-    // console.log('Logged in user:', userData);
     setCurrentUser(userData);
 
     return userData;

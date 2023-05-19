@@ -1,4 +1,3 @@
-//In src/components/Auth/Login/index.js i have the following code:
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../../../api/auth';
