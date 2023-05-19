@@ -105,7 +105,7 @@ const CreateVenue = ({
     if (isUpdate) {
       const updatedVenue = {
         ...venue,
-        media: [venueUrl],
+        media: venueUrl ? [venueUrl] : [],
       };
       onUpdate(updatedVenue);
     } else {
