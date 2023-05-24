@@ -21,7 +21,7 @@
     </tr>
     <tr>
       <th>Repository</th>
-      <td><a href="https://github.com/RobertDacian/Holidaze-project-exam-2.git">Project Repository</a></td>
+      <td><a href="https://github.com/RobertDacian/Holidaze-project-exam-2">Project Repository</a></td>
     </tr>
     <tr>
       <th>Hosted Demo</th>
