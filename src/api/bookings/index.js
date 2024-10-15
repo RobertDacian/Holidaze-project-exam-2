@@ -4,7 +4,7 @@ import {
   API_BOOKINGS,
 } from '../../constants/constants';
 
-const sendRequest = async (url, method, body = null, token = null) => {
+const sendRequest = async (url, method, body = null, token = null, apiKey = null) => {
   if (!token) {
     throw new Error('Token is missing');
   }
@@ -14,12 +14,12 @@ const sendRequest = async (url, method, body = null, token = null) => {
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
+      'X-Noroff-API-Key': apiKey,  // Include API key
     },
     body: body ? JSON.stringify(body) : null,
   };
 
   const response = await fetch(url, options);
-
   const responseData = response.status === 204 ? {} : await response.json();
 
   if (!response.ok) {
@@ -33,46 +33,20 @@ const sendRequest = async (url, method, body = null, token = null) => {
   return responseData;
 };
 
-export const fetchUserBookings = async (user, token) => {
+export const fetchUserBookings = async (user, token, apiKey) => {
   if (!user || !user.name) {
     throw new Error('User or user name is missing');
   }
 
-  const url = new URL(
-    `${API_BASE_URL}/holidaze/profiles/${user.name}/bookings`
-  );
-
+  const url = new URL(`${API_BASE_URL}/profiles/${user.name}/bookings`);
   url.searchParams.append('_customer', 'true');
   url.searchParams.append('_venue', 'true');
 
-  const requestOptions = {
-    method: 'GET',
-    headers: new Headers({
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    }),
-  };
-
-  try {
-    const response = await fetch(url.toString(), requestOptions);
-
-    if (!response.ok) {
-      const data = await response.json();
-      throw new Error(data.message || 'Could not fetch bookings.');
-    }
-
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error('Error fetching bookings:', error);
-    throw error;
-  }
+  return await sendRequest(url.toString(), 'GET', null, token, apiKey);
 };
 
-export const fetchBookingById = async (bookingId, token, queryParams = {}) => {
-  const url = new URL(
-    `${API_BASE_URL}${API_BOOKING.replace(':id', bookingId)}`
-  );
+export const fetchBookingById = async (bookingId, token, apiKey, queryParams = {}) => {
+  const url = new URL(`${API_BASE_URL}${API_BOOKING.replace(':id', bookingId)}`);
   if (queryParams._venue) {
     url.searchParams.append('_venue', 'true');
   }
@@ -80,14 +54,13 @@ export const fetchBookingById = async (bookingId, token, queryParams = {}) => {
     url.searchParams.append('_customer', 'true');
   }
 
-  return await sendRequest(url.toString(), 'GET', null, token);
+  return await sendRequest(url.toString(), 'GET', null, token, apiKey);
 };
 
-export const createBooking = async (bookingData, token) => {
+export const createBooking = async (bookingData, token, apiKey) => {
   if (
     !(
-      Object.prototype.toString.call(bookingData.dateFrom) ===
-        '[object Date]' &&
+      Object.prototype.toString.call(bookingData.dateFrom) === '[object Date]' &&
       Object.prototype.toString.call(bookingData.dateTo) === '[object Date]'
     )
   ) {
@@ -103,17 +76,18 @@ export const createBooking = async (bookingData, token) => {
 
   const url = `${API_BASE_URL}${API_BOOKINGS}`;
 
-  return await sendRequest(url, 'POST', transformedData, token);
+  return await sendRequest(url, 'POST', transformedData, token, apiKey);
 };
 
-export const updateBooking = async (bookingId, updatedBookingData, token) => {
+export const updateBooking = async (bookingId, updatedBookingData, token, apiKey) => {
   const url = `${API_BASE_URL}${API_BOOKING.replace(':id', bookingId)}`;
 
-  return await sendRequest(url, 'PUT', updatedBookingData, token);
+  return await sendRequest(url, 'PUT', updatedBookingData, token, apiKey);
 };
 
-export const deleteBooking = async (bookingId, token) => {
+export const deleteBooking = async (bookingId, token, apiKey) => {
   const url = `${API_BASE_URL}${API_BOOKING.replace(':id', bookingId)}`;
 
-  return await sendRequest(url, 'DELETE', null, token);
+  return await sendRequest(url, 'DELETE', null, token, apiKey);
 };
+
