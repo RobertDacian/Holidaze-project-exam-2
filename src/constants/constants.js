@@ -2,11 +2,11 @@
 export const API_BASE_URL = 'https://v2.api.noroff.dev/';
 
 // Holidaze-auth POST register endpoint
-export const API_AUTH_REGISTER = '/holidaze/auth/register';
-export const API_AUTH_VENUE_MANAGER_REGISTER = '/holidaze/auth/register';
+export const API_AUTH_REGISTER = '/auth/register';
+export const API_AUTH_VENUE_MANAGER_REGISTER = '/auth/register';
 
 // Holidaze-auth POST login endpoint
-export const API_AUTH_LOGIN = `/holidaze/auth/login`;
+export const API_AUTH_LOGIN = `/auth/login`;
 
 // Holidaze-profiles GET profiles endpoint
 export const API_PROFILES = `/holidaze/profiles`;
