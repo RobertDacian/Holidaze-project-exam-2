@@ -1,10 +1,12 @@
+
 import {
   API_BASE_URL,
   API_AUTH_REGISTER,
   API_AUTH_LOGIN,
+  API_KEY_CREATE,
 } from '../../constants/constants';
 
-const sendRequest = async (endpoint, method, body = null, token = null) => {
+const sendRequest = async (endpoint, method, body = null, token = null, apiKey = null) => {
   const headers = new Headers();
 
   if (!(body instanceof FormData)) {
@@ -13,6 +15,10 @@ const sendRequest = async (endpoint, method, body = null, token = null) => {
 
   if (token) {
     headers.append('Authorization', `Bearer ${token}`);
+  }
+
+  if (apiKey) {
+    headers.append('X-Noroff-API-Key', apiKey);
   }
 
   const requestOptions = {
@@ -26,60 +32,38 @@ const sendRequest = async (endpoint, method, body = null, token = null) => {
     const responseData = await response.json();
 
     if (!response.ok) {
-      const errorMessage =
-        responseData.errors && responseData.errors.length
-          ? responseData.errors[0].message
-          : responseData.message || 'Something went wrong';
+      const errorMessage = responseData.errors?.length
+        ? responseData.errors[0].message
+        : responseData.message || 'Something went wrong';
       throw new Error(errorMessage);
     }
 
     return responseData;
   } catch (error) {
-    console.log('Error:', error);
+    console.error('Error:', error);
     throw error;
   }
 };
 
 // Register User Function
-export const registerUser = async (data, isVenueManager) => {
+export const registerUser = async (data, isVenueManager, apiKey) => {
   const { name, email, password, avatar } = data;
   const body = {
     name,
     email,
     password,
-    avatar,
+    avatar: { url: avatar.url, alt: avatar.alt }, // Updated media model
     venueManager: isVenueManager,
   };
 
-  const response = await sendRequest(API_AUTH_REGISTER, 'POST', body);
-
-  const existingUserEmails = JSON.parse(
-    localStorage.getItem('existingUserEmails') || '[]'
-  );
-  const existingVenueManagerEmails = JSON.parse(
-    localStorage.getItem('existingVenueManagerEmails') || '[]'
-  );
-
-  if (isVenueManager) {
-    existingVenueManagerEmails.push(response.email);
-    localStorage.setItem(
-      'existingVenueManagerEmails',
-      JSON.stringify(existingVenueManagerEmails)
-    );
-  } else {
-    existingUserEmails.push(response.email);
-    localStorage.setItem(
-      'existingUserEmails',
-      JSON.stringify(existingUserEmails)
-    );
-  }
+  const response = await sendRequest(API_AUTH_REGISTER, 'POST', body, null, apiKey);
 
   const userData = {
-    name: response.name,
-    email: response.email,
-    avatar: response.avatar,
-    venueManager: response.venueManager,
-    token: response.accessToken,
+    name: response.data.name,
+    email: response.data.email,
+    avatar: response.data.avatar,
+    venueManager: response.data.venueManager,
+    token: response.data.accessToken,
   };
 
   localStorage.setItem('currentUser', JSON.stringify(userData));
@@ -87,41 +71,22 @@ export const registerUser = async (data, isVenueManager) => {
   return userData;
 };
 
-export const login = async (
-  email,
-  password,
-  isVenueManager,
-  setCurrentUser
-) => {
+// Login Function
+export const login = async (email, password, isVenueManager, setCurrentUser, apiKey) => {
   try {
     const response = await sendRequest(API_AUTH_LOGIN, 'POST', {
       email,
       password,
       venueManager: isVenueManager,
-    });
+    }, null, apiKey);
 
-    const {
-      name,
-      email: responseEmail,
-      avatar,
-      venueManager,
-      accessToken,
-    } = response;
+    const { name, email: responseEmail, avatar, venueManager, accessToken } = response.data;
 
     if (responseEmail.trim().toLowerCase() !== email.trim().toLowerCase()) {
       throw new Error('Server response does not match login credentials');
     }
 
-    if (venueManager !== isVenueManager) {
-      return {
-        status: 'error',
-        message: `Please log in as a ${
-          isVenueManager ? 'User' : 'Venue Manager'
-        }.`,
-      };
-    }
-
-    const userData = { name, email, avatar, venueManager, token: accessToken };
+    const userData = { name, email: responseEmail, avatar, venueManager, token: accessToken };
 
     localStorage.setItem('accessToken', accessToken);
     localStorage.setItem('currentUser', JSON.stringify(userData));
@@ -134,3 +99,4 @@ export const login = async (
     throw new Error('Invalid email or password.');
   }
 };
+
