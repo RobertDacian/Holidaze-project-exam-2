@@ -179,3 +179,4 @@ const VenueDetails = ({ venueId, currentUser }) => {
 };
 
 export default VenueDetails;
+
