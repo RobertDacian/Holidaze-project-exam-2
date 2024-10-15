@@ -7,13 +7,14 @@ import {
   API_PROFILE_VENUES,
 } from '../../constants/constants';
 
-const sendRequest = async (endpoint, token) => {
+const sendRequest = async (endpoint, token, apiKey) => {
   const url = `${API_BASE_URL}${endpoint}`;
   const options = {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      Authorization: `Bearer ${token}`,
+      'X-Noroff-API-Key': apiKey,  // Include API key
     },
   };
 
@@ -31,19 +32,20 @@ const sendRequest = async (endpoint, token) => {
   return await response.json();
 };
 
-export const fetchProfiles = async () => {
-  return await sendRequest(API_PROFILES);
+export const fetchProfiles = async (apiKey) => {
+  return await sendRequest(API_PROFILES, null, apiKey);
 };
 
-export const fetchProfileByName = async (name) => {
+export const fetchProfileByName = async (name, apiKey) => {
   const endpoint = API_PROFILE.replace(':name', name);
-  return await sendRequest(endpoint);
+  return await sendRequest(endpoint, null, apiKey);
 };
 
 export const updateProfileMedia = async (
   name,
   avatarUrl,
   token,
+  apiKey,
   isVenueManager = false
 ) => {
   const endpoint = API_PROFILE_MEDIA.replace(':name', name);
@@ -52,6 +54,7 @@ export const updateProfileMedia = async (
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
+      'X-Noroff-API-Key': apiKey,  // Include API key
     },
     body: JSON.stringify({ avatar: avatarUrl, venueManager: isVenueManager }),
   };
@@ -70,17 +73,17 @@ export const updateProfileMedia = async (
   return responseData;
 };
 
-export const fetchProfileBookings = async (name, token) => {
+export const fetchProfileBookings = async (name, token, apiKey) => {
   const endpoint = API_PROFILE_BOOKINGS.replace(':name', name);
-  return await sendRequest(endpoint, token);
+  return await sendRequest(endpoint, token, apiKey);
 };
 
-export const fetchProfileVenues = async (name, token) => {
+export const fetchProfileVenues = async (name, token, apiKey) => {
   const endpoint = API_PROFILE_VENUES.replace(':name', name);
-  return await sendRequest(endpoint, token);
+  return await sendRequest(endpoint, token, apiKey);
 };
 
-export const updateProfile = async (name, userData, token) => {
+export const updateProfile = async (name, userData, token, apiKey) => {
   const endpoint = API_PROFILE.replace(':name', name);
   const url = `${API_BASE_URL}${endpoint}`;
 
@@ -89,6 +92,7 @@ export const updateProfile = async (name, userData, token) => {
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
+      'X-Noroff-API-Key': apiKey,  // Include API key
     },
     body: JSON.stringify(userData),
   });
