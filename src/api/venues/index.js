@@ -8,21 +8,13 @@ const sendRequest = async (
   apiKey = null
 ) => {
   const url = `${API_BASE_URL}${endpoint}`;
-  const headers = {
-    'Content-Type': 'application/json',
-  };
-
-  if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
-  }
-
-  if (apiKey) {
-    headers['X-Noroff-API-Key'] = apiKey;
-  }
-
   const options = {
     method,
-    headers,
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+      'X-Noroff-API-Key': apiKey,
+    },
   };
 
   if (body) {
@@ -30,12 +22,6 @@ const sendRequest = async (
   }
 
   const response = await fetch(url, options);
-
-  // Handle non-JSON responses gracefully
-  if (response.status === 204) {
-    return {}; // No content
-  }
-
   const responseData = await response.json();
 
   if (!response.ok) {
@@ -49,29 +35,27 @@ const sendRequest = async (
   return responseData;
 };
 
-// Fetch venue details by ID
 export const fetchVenueDetails = async (venueId, token, apiKey) => {
+  // Use /holidaze/venues/:id
   return await sendRequest(API_VENUE.replace(':id', venueId), 'GET', null, token, apiKey);
 };
 
-// Create a new venue
 export const createVenue = async (venueData, token, apiKey) => {
+  // Use /holidaze/venues
   return await sendRequest(API_VENUES, 'POST', venueData, token, apiKey);
 };
 
-// Update an existing venue
 export const updateVenue = async (venueId, updatedVenueData, token, apiKey) => {
+  // Use /holidaze/venues/:id
   return await sendRequest(API_VENUE.replace(':id', venueId), 'PUT', updatedVenueData, token, apiKey);
 };
 
-// Delete a venue by ID
 export const deleteVenue = async (venueId, token, apiKey) => {
+  // Use /holidaze/venues/:id
   return await sendRequest(API_VENUE.replace(':id', venueId), 'DELETE', null, token, apiKey);
 };
 
-// Fetch all venues
 export const fetchVenues = async (token, apiKey) => {
+  // Use /holidaze/venues
   return await sendRequest(API_VENUES, 'GET', null, token, apiKey);
 };
-
-
