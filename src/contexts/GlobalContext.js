@@ -8,6 +8,7 @@ import React, {
 import * as bookingsAPI from '../api/bookings';
 import * as profilesAPI from '../api/profiles';
 import * as venuesAPI from '../api/venues';
+import { API_KEY } from '../constants/constants'; 
 
 const GlobalContext = createContext();
 
@@ -99,7 +100,8 @@ export const GlobalProvider = ({ children }) => {
 
       const fetchedVenues = await venuesAPI.fetchVenuesByProfile(
         currentUser,
-        currentUser.token
+        currentUser.token,
+        API_KEY 
       );
 
       setVenues(fetchedVenues);
@@ -114,7 +116,7 @@ export const GlobalProvider = ({ children }) => {
 
   const createVenue = async (name, venueData, token, venueManager) => {
     try {
-      const newVenue = await venuesAPI.createVenue(venueData, token);
+      const newVenue = await venuesAPI.createVenue(venueData, token, API_KEY);
 
       fetchUserVenuesFromAPI();
       return newVenue;
@@ -127,7 +129,7 @@ export const GlobalProvider = ({ children }) => {
   const updateVenue = async (venueId, venueData) => {
     try {
       console.log('Updating venue with data:', venueData);
-      await venuesAPI.updateVenue(venueId, venueData, currentUser.token);
+      await venuesAPI.updateVenue(venueId, venueData, currentUser.token, API_KEY); 
       fetchUserVenuesFromAPI();
     } catch (error) {
       console.log('Error updating venue:', error);
@@ -137,7 +139,7 @@ export const GlobalProvider = ({ children }) => {
 
   const deleteVenue = async (venueId) => {
     try {
-      await venuesAPI.deleteVenue(venueId, currentUser.token);
+      await venuesAPI.deleteVenue(venueId, currentUser.token, API_KEY);
       fetchUserVenuesFromAPI();
     } catch (error) {
       console.error('Error deleting venue:', error);
@@ -146,7 +148,7 @@ export const GlobalProvider = ({ children }) => {
 
   const fetchProfiles = async () => {
     try {
-      const fetchedProfiles = await profilesAPI.fetchProfiles();
+      const fetchedProfiles = await profilesAPI.fetchProfiles(API_KEY);
       setProfiles(fetchedProfiles);
     } catch (error) {
       console.log('Error fetching profiles:', error);
@@ -164,6 +166,7 @@ export const GlobalProvider = ({ children }) => {
         name,
         avatarUrl,
         token,
+        API_KEY,
         isVenueManager
       );
       setCurrentUser((prevUser) => ({
@@ -181,7 +184,8 @@ export const GlobalProvider = ({ children }) => {
       const updatedUser = await profilesAPI.updateProfile(
         currentUser.name,
         userData,
-        currentUser.token
+        currentUser.token,
+        API_KEY 
       );
       setCurrentUser(updatedUser);
     } catch (error) {
@@ -197,7 +201,8 @@ export const GlobalProvider = ({ children }) => {
 
       const fetchedBookings = await bookingsAPI.fetchUserBookings(
         currentUser,
-        currentUser.token
+        currentUser.token,
+        API_KEY
       );
 
       setBookings(fetchedBookings);
@@ -214,7 +219,8 @@ export const GlobalProvider = ({ children }) => {
     try {
       const newBooking = await bookingsAPI.createBooking(
         bookingData,
-        currentUser.token
+        currentUser.token,
+        API_KEY 
       );
       fetchUserBookingsFromAPI();
       return newBooking;
@@ -229,7 +235,8 @@ export const GlobalProvider = ({ children }) => {
       await bookingsAPI.updateBooking(
         bookingId,
         bookingData,
-        currentUser.token
+        currentUser.token,
+        API_KEY 
       );
       fetchUserBookingsFromAPI();
     } catch (error) {
@@ -240,7 +247,7 @@ export const GlobalProvider = ({ children }) => {
 
   const deleteBooking = async (bookingId) => {
     try {
-      await bookingsAPI.deleteBooking(bookingId, currentUser.token);
+      await bookingsAPI.deleteBooking(bookingId, currentUser.token, API_KEY);
       fetchUserBookingsFromAPI();
     } catch (error) {
       console.error('Error deleting booking:', error);
@@ -278,3 +285,4 @@ export const GlobalProvider = ({ children }) => {
     <GlobalContext.Provider value={value}>{children}</GlobalContext.Provider>
   );
 };
+
