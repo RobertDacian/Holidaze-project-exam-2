@@ -13,6 +13,7 @@ import useFormErrors from '../../common/Errors';
 import { Error } from '../../common/Errors/Error.styles';
 import { useGlobal } from '../../../contexts/GlobalContext';
 import CheckboxDropdown from '../../common/CheckboxDropdown';
+import { API_KEY } from '../../../constants/constants';
 
 const CreateVenue = ({
   setActiveTab,
@@ -153,6 +154,7 @@ const CreateVenue = ({
           currentUser.name,
           newVenue,
           currentUser.token,
+          API_KEY,
           currentUser.venueManager
         );
 
@@ -355,3 +357,4 @@ const CreateVenue = ({
 };
 
 export default CreateVenue;
+
