@@ -7,19 +7,19 @@ export const API_AUTH_LOGIN = '/auth/login';
 export const API_KEY_CREATE = '/auth/create-api-key'; // New API key creation endpoint
 
 // Profiles-related endpoints
-export const API_PROFILES = '/profiles';              // GET all profiles
-export const API_PROFILE = '/profiles/:name';         // GET single profile
-export const API_PROFILE_MEDIA = '/profiles/:name/media';  // PUT profile avatar (now uses media model)
-export const API_PROFILE_VENUES = '/profiles/:name/venues'; // GET user's venues
-export const API_PROFILE_BOOKINGS = '/profiles/:name/bookings'; // GET user's bookings
+export const API_PROFILES = '/holidaze/profiles';              // GET all profiles
+export const API_PROFILE = '/holidaze/profiles/:name';         // GET single profile
+export const API_PROFILE_MEDIA = '/holidaze/profiles/:name/media';  // PUT profile avatar (now uses media model)
+export const API_PROFILE_VENUES = '/holidaze/profiles/:name/venues'; // GET user's venues
+export const API_PROFILE_BOOKINGS = '/holidaze/profiles/:name/bookings'; // GET user's bookings
 
 // Venues-related endpoints
-export const API_VENUES = '/venues';                 // GET all venues, POST new venue
-export const API_VENUE = '/venues/:id';              // GET, PUT, DELETE single venue
+export const API_VENUES = '/holidaze/venues';                 // GET all venues, POST new venue
+export const API_VENUE = '/holidaze/venues/:id';              // GET, PUT, DELETE single venue
 
 // Bookings-related endpoints
-export const API_BOOKINGS = '/bookings';             // GET all bookings, POST new booking
-export const API_BOOKING = '/bookings/:id';          // GET, PUT, DELETE single booking
+export const API_BOOKINGS = '/holidaze/bookings';             // GET all bookings, POST new booking
+export const API_BOOKING = '/holidaze/bookings/:id';          // GET, PUT, DELETE single booking
 
 // General pagination and sorting parameters can be added to queries as needed
-export const PAGINATION_QUERY = '?page='; 
+export const PAGINATION_QUERY = '?page=';
