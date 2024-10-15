@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { login } from '../../../api/auth';
 import { FormWrapper } from '../../../components/Auth/Signup/SignUp.styles';
 import { useGlobal } from '../../../contexts/GlobalContext';
+import { API_KEY } from '../../../constants/constants';
 
 const LogIn = () => {
   const { setCurrentUser } = useGlobal();
@@ -32,7 +33,8 @@ const LogIn = () => {
         formData.email,
         formData.password,
         isVenueManager,
-        setCurrentUser
+        setCurrentUser,
+        API_KEY
       );
 
       if (user.status === 'error') {
