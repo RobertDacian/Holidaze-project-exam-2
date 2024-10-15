@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useGlobal } from '../../contexts/GlobalContext';
-import { API_KEY } from '../../constants/constants';  // Import the API key
+import { API_KEY } from '../../constants/constants'; 
 import {
   fetchUserBookings,
   deleteBooking,
@@ -13,7 +13,7 @@ const useUserDashboard = () => {
 
   useEffect(() => {
     if (currentUser) {
-      fetchUserBookings(currentUser, currentUser.token, API_KEY)  // Pass API key here
+      fetchUserBookings(currentUser, currentUser.token, API_KEY)
         .then((fetchedBookings) => {
           setBookings(fetchedBookings);
         })
@@ -29,7 +29,7 @@ const useUserDashboard = () => {
         currentUser.name,
         mediaUrl,
         currentUser.token,
-        API_KEY,  // Pass API key here
+        API_KEY, 
         currentUser.venueManager
       );
     } catch (error) {
@@ -39,7 +39,7 @@ const useUserDashboard = () => {
 
   const handleDeleteBooking = async (bookingId) => {
     try {
-      await deleteBooking(bookingId, currentUser.token, API_KEY);  // Pass API key here
+      await deleteBooking(bookingId, currentUser.token, API_KEY); 
       setBookings((prevBookings) =>
         prevBookings.filter((booking) => booking.id !== bookingId)
       );
@@ -56,7 +56,7 @@ const useUserDashboard = () => {
         bookingData,
         isVenueManager,
         currentUser._id,
-        API_KEY   // Pass API key here
+        API_KEY 
       );
     } catch (error) {
       console.error('Error updating booking:', error);
