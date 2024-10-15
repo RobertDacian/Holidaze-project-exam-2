@@ -23,3 +23,4 @@ export const API_BOOKING = '/holidaze/bookings/:id';          // GET, PUT, DELET
 
 // General pagination and sorting parameters can be added to queries as needed
 export const PAGINATION_QUERY = '?page=';
+
