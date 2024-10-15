@@ -7,7 +7,7 @@ import { Form, FormGroup, Label, Input, Button } from './BookingForm.styles';
 import useFormErrors from '../common/Errors';
 import { Error } from '../common/Errors/Error.styles';
 import { useGlobal } from '../../contexts/GlobalContext';
-import { API_KEY } from '../../constants/constants';  // Import the API key
+import { API_KEY } from '../../constants/constants';
 
 const BookingForm = ({ venueId, onUpdate, booking, errorMessage }) => {
   const [startDate, setStartDate] = useState(null);
@@ -66,11 +66,11 @@ const BookingForm = ({ venueId, onUpdate, booking, errorMessage }) => {
 
       try {
         if (onUpdate) {
-          await updateBooking(booking.id, bookingData, currentUser.token, API_KEY);  // Pass token and API key
+          await updateBooking(booking.id, bookingData, currentUser.token, API_KEY);
         } else {
-          await createBooking(bookingData, currentUser.token, API_KEY);  // Pass token and API key
+          await createBooking(bookingData, currentUser.token, API_KEY);
         }
-        fetchUserBookingsFromAPI(currentUser.token, API_KEY);  // Ensure the API key is passed
+        fetchUserBookingsFromAPI(currentUser.token, API_KEY);
         setError('bookingSuccess', 'Booking created successfully!');
 
         setTimeout(() => {
