@@ -13,7 +13,6 @@ const sendRequest = async (endpoint, method, body = null, token = null) => {
 
   if (token) {
     headers.append('Authorization', `Bearer ${token}`);
-    X-Noroff-API-Key": apiKey
   }
 
   const requestOptions = {
