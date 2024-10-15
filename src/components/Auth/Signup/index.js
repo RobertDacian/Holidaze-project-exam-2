@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { registerUser, login } from '../../../api/auth';
 import { FormWrapper } from './SignUp.styles';
 import { useGlobal } from '../../../contexts/GlobalContext';
+import { API_KEY } from '../../../constants/constants';
 
 const SignUp = () => {
   const { setCurrentUser } = useGlobal();
@@ -50,13 +51,14 @@ const SignUp = () => {
 
     const isVenueManager = activeTab === 'venue';
     try {
-      const user = await registerUser(formData, isVenueManager);
+      const user = await registerUser(formData, isVenueManager, API_KEY);  // Pass API key here
 
       const loggedInUser = await login(
         formData.email,
         formData.password,
         isVenueManager,
-        setCurrentUser
+        setCurrentUser,
+        API_KEY 
       );
       setCurrentUser(loggedInUser);
 
