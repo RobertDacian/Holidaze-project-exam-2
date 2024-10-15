@@ -22,7 +22,7 @@ export const API_PROFILE_BOOKINGS = `/holidaze/profiles/:name/bookings`;
 // Holidaze-venues GET & POST endpoints
 export const API_VENUES = `/holidaze/venues`;
 // Holidaze-venues GET, PUT & DELETE endpoints
-export const API_VENUE = `/holidaze/venues/id`;
+export const API_VENUE = `/holidaze/venues/:id`;
 
 //Holidaze-bookings GET & POST bookings endpoint
 export const API_BOOKINGS = `/holidaze/bookings`;
