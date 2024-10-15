@@ -1,41 +1,73 @@
-import { useEffect } from 'react';
+import {
+  fetchUserBookings,
+  deleteBooking,
+  updateBooking,
+} from '../../api/bookings';
+import { updateProfileMedia } from '../../api/profiles';
+import { API_KEY } from '../../constants/constants';  
 import { useGlobal } from '../../contexts/GlobalContext';
-import * as venuesAPI from '../../api/venues';
+import { useEffect } from 'react';
 
-const useVenueManagerDashboard = () => {
-  const { currentUser, setVenues, fetchUserVenuesFromAPI } = useGlobal();
+const useUserDashboard = () => {
+  const { currentUser, setBookings } = useGlobal();
 
   useEffect(() => {
     if (currentUser) {
-      fetchUserVenuesFromAPI();
+      fetchUserBookings(currentUser, currentUser.token, API_KEY) 
+        .then((fetchedBookings) => {
+          setBookings(fetchedBookings);
+        })
+        .catch((error) => {
+          console.error('Error fetching bookings:', error);
+        });
     }
-  }, [currentUser, fetchUserVenuesFromAPI]);
+  }, [currentUser, setBookings]);
 
-  const updateVenue = async (venueId, venueData) => {
+  const handleUpdateProfileMedia = async (mediaType, mediaUrl) => {
     try {
-      await venuesAPI.updateVenue(venueId, venueData, currentUser.token);
-      fetchUserVenuesFromAPI();
+      await updateProfileMedia(
+        currentUser.name,
+        mediaUrl,
+        currentUser.token,
+        API_KEY, 
+        currentUser.venueManager
+      );
     } catch (error) {
-      console.log('Error updating venue:', error);
-      throw error;
+      console.error('Error while updating profile media:', error);
     }
   };
 
-  const deleteVenue = async (venueId) => {
+  const handleDeleteBooking = async (bookingId) => {
     try {
-      await venuesAPI.deleteVenue(venueId, currentUser.token);
-      setVenues((prevVenues) =>
-        prevVenues.filter((venue) => venue.id !== venueId)
+      await deleteBooking(bookingId, currentUser.token, API_KEY);
+      setBookings((prevBookings) =>
+        prevBookings.filter((booking) => booking.id !== bookingId)
       );
     } catch (error) {
-      console.error('Error deleting venue:', error);
+      console.error('Error while canceling booking:', error);
+    }
+  };
+
+  const handleUpdateBooking = async (bookingId, bookingData) => {
+    try {
+      const isVenueManager = currentUser.userType === 'venue_manager';
+      await updateBooking(
+        bookingId,
+        bookingData,
+        isVenueManager,
+        currentUser._id,
+        API_KEY   // Pass API key here
+      );
+    } catch (error) {
+      console.error('Error updating booking:', error);
     }
   };
 
   return {
-    updateVenue,
-    deleteVenue,
+    handleUpdateProfileMedia,
+    handleDeleteBooking,
+    handleUpdateBooking,
   };
 };
 
-export default useVenueManagerDashboard;
+export default useUserDashboard;
