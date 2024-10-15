@@ -57,3 +57,4 @@ const UpdateDeleteBooking = ({ booking, isOpen, onClose }) => {
 };
 
 export default UpdateDeleteBooking;
+
