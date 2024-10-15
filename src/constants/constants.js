@@ -1,5 +1,5 @@
 // Holidaze-auth base URL
-export const API_BASE_URL = 'https://api.noroff.dev/api/v2';
+export const API_BASE_URL = 'https://v2.api.noroff.dev/';
 
 // Holidaze-auth POST register endpoint
 export const API_AUTH_REGISTER = '/holidaze/auth/register';
