@@ -22,5 +22,4 @@ export const API_BOOKINGS = '/bookings';             // GET all bookings, POST n
 export const API_BOOKING = '/bookings/:id';          // GET, PUT, DELETE single booking
 
 // General pagination and sorting parameters can be added to queries as needed
-export const PAGINATION_QUERY = '?page=';          
-
+export const PAGINATION_QUERY = '?page='; 
