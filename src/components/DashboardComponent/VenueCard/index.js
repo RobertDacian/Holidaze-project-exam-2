@@ -68,3 +68,4 @@ VenueCard.propTypes = {
 };
 
 export default VenueCard;
+
