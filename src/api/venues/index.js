@@ -1,5 +1,6 @@
 import { API_BASE_URL, API_VENUES, API_VENUE } from '../../constants/constants';
 
+// Helper function to send API requests
 const sendRequest = async (
   endpoint,
   method = 'GET',
@@ -53,45 +54,13 @@ export const fetchVenues = async (token = null, apiKey = null) => {
   }
 };
 
-// Fetch venue details
+// Fetch venue details by ID
 export const fetchVenueDetails = async (venueId, token = null, apiKey = null) => {
   try {
     const endpoint = API_VENUE.replace(':id', venueId);
     return await sendRequest(endpoint, 'GET', null, token, apiKey);
   } catch (error) {
     console.error('Error fetching venue details:', error);
-    throw error;
-  }
-};
-
-// Create a new venue
-export const createVenue = async (venueData, token, apiKey) => {
-  try {
-    return await sendRequest(API_VENUES, 'POST', venueData, token, apiKey);
-  } catch (error) {
-    console.error('Error creating venue:', error);
-    throw error;
-  }
-};
-
-// Update an existing venue
-export const updateVenue = async (venueId, updatedVenueData, token, apiKey) => {
-  try {
-    const endpoint = API_VENUE.replace(':id', venueId);
-    return await sendRequest(endpoint, 'PUT', updatedVenueData, token, apiKey);
-  } catch (error) {
-    console.error('Error updating venue:', error);
-    throw error;
-  }
-};
-
-// Delete a venue
-export const deleteVenue = async (venueId, token, apiKey) => {
-  try {
-    const endpoint = API_VENUE.replace(':id', venueId);
-    return await sendRequest(endpoint, 'DELETE', null, token, apiKey);
-  } catch (error) {
-    console.error('Error deleting venue:', error);
     throw error;
   }
 };
