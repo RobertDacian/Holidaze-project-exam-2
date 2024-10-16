@@ -54,11 +54,17 @@ export const fetchVenues = async (token = null, apiKey = null) => {
   }
 };
 
-// Fetch venue details by ID
 export const fetchVenueDetails = async (venueId, token = null, apiKey = null) => {
   try {
+    // Log the venueId to ensure it's correct
+    console.log('Fetching details for venueId:', venueId);
+
     const endpoint = API_VENUE.replace(':id', venueId);
-    return await sendRequest(endpoint, 'GET', null, token, apiKey);
+    console.log('Using endpoint:', endpoint); // Debugging the URL
+
+    const result = await sendRequest(endpoint, 'GET', null, token, apiKey);
+    console.log('Fetched venue details:', result); // Log the fetched details
+    return result;
   } catch (error) {
     console.error('Error fetching venue details:', error);
     throw error;
