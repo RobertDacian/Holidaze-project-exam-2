@@ -137,8 +137,8 @@ const VenueDetails = ({ venueId, currentUser }) => {
     <VenueDetailsWrapper>
       {venueDetails && (
         <>
-          {venueDetails.media[0] ? (
-            <img src={venueDetails.media[0]} alt={venueDetails.name} />
+          {venueDetails.media && venueDetails.media.length > 0 ? (
+            <img src={venueDetails.media[0].url} alt={venueDetails.name} />
           ) : (
             <MdImage size={200} color={'var(--primary-color)'} />
           )}
