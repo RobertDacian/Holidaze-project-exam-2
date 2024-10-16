@@ -6,9 +6,9 @@ import React, {
   useCallback,
 } from 'react';
 import * as bookingsAPI from '../api/bookings';
-import * * profilesAPI from '../api/profiles';
 import * as venuesAPI from '../api/venues';
 import { API_KEY } from '../constants/constants';
+import * as profilesAPI from '../api/profile';
 
 const GlobalContext = createContext();
 
