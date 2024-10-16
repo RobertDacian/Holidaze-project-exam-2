@@ -5,6 +5,8 @@ export const API_BASE_URL = 'https://v2.api.noroff.dev';
 export const API_AUTH_REGISTER = '/auth/register';
 export const API_AUTH_LOGIN = '/auth/login';
 export const API_KEY_CREATE = '/auth/create-api-key'; // New API key creation endpoint
+export const API_KEY = 'your_api_key';
+
 
 // Profiles-related endpoints
 export const API_PROFILES = '/holidaze/profiles';              // GET all profiles
