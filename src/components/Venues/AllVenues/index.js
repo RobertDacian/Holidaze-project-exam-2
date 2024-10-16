@@ -95,6 +95,7 @@ const VenuesComponent = () => {
   const loadMoreVenues = () => {
     setVisibleVenues((prevVisibleVenues) => prevVisibleVenues + 9);
   };
+
   return (
     <>
       <div className='wrapper-center '>
@@ -111,11 +112,11 @@ const VenuesComponent = () => {
           filteredVenues.slice(0, visibleVenues).map((venue) => (
             <VenueCard key={venue.id}>
               <Link to={`/venues/${venue.id}`}>
-                {venue.media[0] ? (
+                {venue.media && venue.media.length > 0 ? (
                   <img
                     className='card-img'
-                    src={venue.media[0]}
-                    alt={venue.name}
+                    src={venue.media[0].url || 'https://via.placeholder.com/150'}
+                    alt={venue.media[0].alt || venue.name}
                   />
                 ) : (
                   <MdImage
@@ -155,3 +156,4 @@ const VenuesComponent = () => {
 };
 
 export default VenuesComponent;
+
