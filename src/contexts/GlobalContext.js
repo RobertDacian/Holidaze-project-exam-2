@@ -6,7 +6,7 @@ import React, {
   useCallback,
 } from 'react';
 import * as bookingsAPI from '../api/bookings';
-import * as profilesAPI from '../api/profile'; // Ensure the path and file name are correct
+import * as profilesAPI from '../api/profiles'; // Ensure the path and file name are correct
 import * as venuesAPI from '../api/venues';
 import { API_KEY } from '../constants/constants';
 
@@ -19,7 +19,9 @@ export const useGlobal = () => {
 export const GlobalProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(() => {
     const storedUser = localStorage.getItem('currentUser');
-    return storedUser && storedUser !== 'undefined' ? JSON.parse(storedUser) : null;
+    return storedUser && storedUser !== 'undefined'
+      ? JSON.parse(storedUser)
+      : null;
   });
 
   const [token, setToken] = useState(() => {
@@ -29,13 +31,17 @@ export const GlobalProvider = ({ children }) => {
 
   const [venues, setVenues] = useState(() => {
     const storedVenues = localStorage.getItem('venues');
-    return storedVenues && storedVenues !== 'undefined' ? JSON.parse(storedVenues) : [];
+    return storedVenues && storedVenues !== 'undefined'
+      ? JSON.parse(storedVenues)
+      : [];
   });
 
   const [venueDetails, setVenueDetails] = useState(null);
   const [bookings, setBookings] = useState(() => {
     const storedBookings = localStorage.getItem('bookings');
-    return storedBookings && storedBookings !== 'undefined' ? JSON.parse(storedBookings) : [];
+    return storedBookings && storedBookings !== 'undefined'
+      ? JSON.parse(storedBookings)
+      : [];
   });
 
   const [profiles, setProfiles] = useState([]);
@@ -137,9 +143,19 @@ export const GlobalProvider = ({ children }) => {
     }
   };
 
-  const updateProfileMedia = async (name, avatarUrl, isVenueManager = false) => {
+  const updateProfileMedia = async (
+    name,
+    avatarUrl,
+    isVenueManager = false
+  ) => {
     try {
-      await profilesAPI.updateProfileMedia(name, avatarUrl, token, API_KEY, isVenueManager);
+      await profilesAPI.updateProfileMedia(
+        name,
+        avatarUrl,
+        token,
+        API_KEY,
+        isVenueManager
+      );
       setCurrentUser((prevUser) => ({ ...prevUser, avatar: avatarUrl }));
     } catch (error) {
       console.log('Error updating profile media:', error);
@@ -149,7 +165,12 @@ export const GlobalProvider = ({ children }) => {
 
   const updateCurrentUserProfile = async (userData) => {
     try {
-      const updatedUser = await profilesAPI.updateProfile(currentUser.name, userData, token, API_KEY);
+      const updatedUser = await profilesAPI.updateProfile(
+        currentUser.name,
+        userData,
+        token,
+        API_KEY
+      );
       setCurrentUser(updatedUser);
     } catch (error) {
       console.log('Error updating profile:', error);
@@ -160,7 +181,11 @@ export const GlobalProvider = ({ children }) => {
     try {
       if (!currentUser || !currentUser.name) return;
 
-      const fetchedBookings = await bookingsAPI.fetchUserBookings(currentUser.name, token, API_KEY);
+      const fetchedBookings = await bookingsAPI.fetchUserBookings(
+        currentUser.name,
+        token,
+        API_KEY
+      );
       setBookings(fetchedBookings);
     } catch (error) {
       console.log('Error fetching bookings:', error);
@@ -173,7 +198,11 @@ export const GlobalProvider = ({ children }) => {
 
   const createBooking = async (bookingData) => {
     try {
-      const newBooking = await bookingsAPI.createBooking(bookingData, token, API_KEY);
+      const newBooking = await bookingsAPI.createBooking(
+        bookingData,
+        token,
+        API_KEY
+      );
       fetchUserBookingsFromAPI();
       return newBooking;
     } catch (error) {
@@ -228,7 +257,7 @@ export const GlobalProvider = ({ children }) => {
     updateBooking,
   };
 
-  return <GlobalContext.Provider value={value}>{children}</GlobalContext.Provider>;
+  return (
+    <GlobalContext.Provider value={value}>{children}</GlobalContext.Provider>
+  );
 };
-
-
