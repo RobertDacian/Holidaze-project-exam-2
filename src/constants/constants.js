@@ -20,6 +20,3 @@ export const API_VENUE = '/holidaze/venues/:id';              // GET, PUT, DELET
 // Bookings-related endpoints
 export const API_BOOKINGS = '/holidaze/bookings';             // GET all bookings, POST new booking
 export const API_BOOKING = '/holidaze/bookings/:id';          // GET, PUT, DELETE single booking
-
-// General pagination and sorting parameters can be added to queries as needed
-export const PAGINATION_QUERY = '?page=';
