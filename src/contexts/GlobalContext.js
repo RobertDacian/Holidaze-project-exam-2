@@ -6,9 +6,9 @@ import React, {
   useCallback,
 } from 'react';
 import * as bookingsAPI from '../api/bookings';
+import * as profilesAPI from '../api/profile'; // Ensure the path and file name are correct
 import * as venuesAPI from '../api/venues';
 import { API_KEY } from '../constants/constants';
-import * as profilesAPI from '../api/profile';
 
 const GlobalContext = createContext();
 
@@ -84,21 +84,21 @@ export const GlobalProvider = ({ children }) => {
       if (!currentUser || !currentUser.name) return;
 
       const fetchedVenues = await venuesAPI.fetchVenuesByProfile(
-        currentUser,
-        currentUser.token,
+        currentUser.name,
+        token,
         API_KEY
       );
       setVenues(fetchedVenues);
     } catch (error) {
       console.log('Error fetching venues:', error);
     }
-  }, [currentUser, setVenues]);
+  }, [currentUser, token]);
 
   useEffect(() => {
     fetchUserVenuesFromAPI();
   }, [fetchUserVenuesFromAPI]);
 
-  const createVenue = async (name, venueData) => {
+  const createVenue = async (venueData) => {
     try {
       const newVenue = await venuesAPI.createVenue(venueData, token, API_KEY);
       fetchUserVenuesFromAPI();
@@ -111,7 +111,6 @@ export const GlobalProvider = ({ children }) => {
 
   const updateVenue = async (venueId, venueData) => {
     try {
-      console.log('Updating venue with data:', venueData);
       await venuesAPI.updateVenue(venueId, venueData, token, API_KEY);
       fetchUserVenuesFromAPI();
     } catch (error) {
@@ -161,12 +160,12 @@ export const GlobalProvider = ({ children }) => {
     try {
       if (!currentUser || !currentUser.name) return;
 
-      const fetchedBookings = await bookingsAPI.fetchUserBookings(currentUser, token, API_KEY);
+      const fetchedBookings = await bookingsAPI.fetchUserBookings(currentUser.name, token, API_KEY);
       setBookings(fetchedBookings);
     } catch (error) {
       console.log('Error fetching bookings:', error);
     }
-  }, [currentUser, token, setBookings]);
+  }, [currentUser, token]);
 
   useEffect(() => {
     fetchUserBookingsFromAPI();
@@ -231,4 +230,5 @@ export const GlobalProvider = ({ children }) => {
 
   return <GlobalContext.Provider value={value}>{children}</GlobalContext.Provider>;
 };
+
 
