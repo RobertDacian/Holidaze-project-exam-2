@@ -7,7 +7,7 @@ import {
   API_PROFILE_VENUES,
 } from '../../constants/constants';
 
-const DEFAULT_AVATAR_URL = 'https://via.placeholder.com/150';  // Placeholder avatar
+const DEFAULT_AVATAR_URL = 'https://via.placeholder.com/150'; // Placeholder avatar
 
 const sendRequest = async (endpoint, token, apiKey) => {
   const url = `${API_BASE_URL}${endpoint}`;
@@ -16,7 +16,7 @@ const sendRequest = async (endpoint, token, apiKey) => {
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
-      'X-Noroff-API-Key': apiKey,  // Include API key
+      'X-Noroff-API-Key': apiKey, // Include API key
     },
   };
 
@@ -62,7 +62,10 @@ export const updateProfileMedia = async (
       Authorization: `Bearer ${token}`,
       'X-Noroff-API-Key': apiKey,
     },
-    body: JSON.stringify({ avatar: finalAvatarUrl, venueManager: isVenueManager }),
+    body: JSON.stringify({
+      avatar: finalAvatarUrl,
+      venueManager: isVenueManager,
+    }),
   };
 
   const response = await fetch(`${API_BASE_URL}${endpoint}`, requestOptions);
