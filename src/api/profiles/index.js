@@ -7,6 +7,8 @@ import {
   API_PROFILE_VENUES,
 } from '../../constants/constants';
 
+const DEFAULT_AVATAR_URL = 'https://via.placeholder.com/150';  // Placeholder avatar
+
 const sendRequest = async (endpoint, token, apiKey) => {
   const url = `${API_BASE_URL}${endpoint}`;
   const options = {
@@ -49,14 +51,18 @@ export const updateProfileMedia = async (
   isVenueManager = false
 ) => {
   const endpoint = API_PROFILE_MEDIA.replace(':name', name);
+
+  // If avatarUrl is missing or null, set it to the default placeholder
+  const finalAvatarUrl = avatarUrl || DEFAULT_AVATAR_URL;
+
   const requestOptions = {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
-      'X-Noroff-API-Key': apiKey,  // Include API key
+      'X-Noroff-API-Key': apiKey,
     },
-    body: JSON.stringify({ avatar: avatarUrl, venueManager: isVenueManager }),
+    body: JSON.stringify({ avatar: finalAvatarUrl, venueManager: isVenueManager }),
   };
 
   const response = await fetch(`${API_BASE_URL}${endpoint}`, requestOptions);
@@ -92,7 +98,7 @@ export const updateProfile = async (name, userData, token, apiKey) => {
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
-      'X-Noroff-API-Key': apiKey,  // Include API key
+      'X-Noroff-API-Key': apiKey,
     },
     body: JSON.stringify(userData),
   });
